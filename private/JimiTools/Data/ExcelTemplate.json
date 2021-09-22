@@ -1,0 +1,182 @@
+[
+  {
+    "TemplateName": "惠仕三笑模板",
+    "Columns": [
+      {
+        "Name": "发货日期",
+        "SampleValue": "2021/9/7",
+        "ReferenceColumn": "发货日期",
+        "Index": "1"
+      },
+      {
+        "Name": "制单人",
+        "SampleValue": "DUANYIN",
+        "ReferenceColumn": "制单人",
+        "Index": "2"
+      },
+      {
+        "Name": "销售姓名",
+        "SampleValue": "建东吴",
+        "ReferenceColumn": "销售姓名",
+        "Index": "3"
+      },
+      {
+        "Name": "订单编号",
+        "SampleValue": "279536908",
+        "ReferenceColumn": "订单编号",
+        "Index": "4"
+      },
+      {
+        "Name": "客户编号",
+        "SampleValue": "16373277",
+        "ReferenceColumn": "客户编号",
+        "Index": "5"
+      },
+      {
+        "Name": "客户名称",
+        "SampleValue": "广州江河幕墙系统工程有限公司",
+        "ReferenceColumn": "客户名称",
+        "Index": "6"
+      },
+      {
+        "Name": "目的省份",
+        "SampleValue": "广东省",
+        "ReferenceColumn": "目的省份",
+        "Index": "7"
+      },
+      {
+        "Name": "目的城市",
+        "SampleValue": "深圳",
+        "ReferenceColumn": "目的城市",
+        "Index": "8"
+      },
+      {
+        "Name": "送货地址",
+        "SampleValue": "广东省深圳市龙华区民塘路一白松一路交汇处民治工地",
+        "ReferenceColumn": "送货地址",
+        "Index": "9"
+      },
+      {
+        "Name": "收货人姓名",
+        "SampleValue": "段鑫鑫",
+        "ReferenceColumn": "收货人姓名",
+        "Index": "10"
+      },
+      {
+        "Name": "收货人电话",
+        "SampleValue": "13657912570",
+        "ReferenceColumn": "收货人电话",
+        "Index": "11"
+      },
+      {
+        "Name": "包装件数",
+        "SampleValue": "2托50箱",
+        "ReferenceColumn": "包装件数",
+        "Index": "12"
+      },
+      {
+        "Name": "重量",
+        "SampleValue": "916.3",
+        "ReferenceColumn": "毛重_(KG)",
+        "Index": "13"
+      },
+      {
+        "Name": "运输方式",
+        "SampleValue": "公路",
+        "ReferenceColumn": "运输方式",
+        "Index": "14"
+      },
+      {
+        "Name": "整车/零担",
+        "SampleValue": "LTL",
+        "ReferenceColumn": "整车/零担",
+        "Index": "15"
+      },
+      {
+        "Name": "按时效应到日期",
+        "SampleValue": "2021/9/11",
+        "ReferenceColumn": "按时效应到日期",
+        "Index": "16"
+      },
+      {
+        "Name": "预计到货日日期",
+        "SampleValue": "2021/9/19",
+        "ReferenceColumn": "预计到货日日期",
+        "Index": "17"
+      },
+      {
+        "Name": "实际的到货日期",
+        "SampleValue": "",
+        "ReferenceColumn": "实际到货日期",
+        "Index": "18"
+      },
+      {
+        "Name": "跟踪日期",
+        "SampleValue": "2021/9/18",
+        "ReferenceColumn": "跟踪日期",
+        "Index": "19"
+      },
+      {
+        "Name": "在途位置",
+        "SampleValue": "深圳",
+        "ReferenceColumn": "在途位置",
+        "Index": "20"
+      },
+      {
+        "Name": "送货状态",
+        "SampleValue": "目的地",
+        "ReferenceColumn": "送货状态",
+        "Index": "21"
+      },
+      {
+        "Name": "更新在途位置",
+        "SampleValue": "",
+        "ReferenceColumn": "",
+        "Index": "22"
+      },
+      {
+        "Name": "更新送货状态",
+        "SampleValue": "",
+        "ReferenceColumn": "",
+        "Index": "23"
+      },
+      {
+        "Name": "延误原因",
+        "SampleValue": "等通知送货订单；已预约18号晚上18：30-19：00收货",
+        "ReferenceColumn": "延误原因",
+        "Index": "24"
+      },
+      {
+        "Name": "延误原因分类",
+        "SampleValue": "收货人导致",
+        "ReferenceColumn": "延误原因分类",
+        "Index": "25"
+      },
+      {
+        "Name": "实际到货日期",
+        "SampleValue": "",
+        "ReferenceColumn": "实际到货日期",
+        "Index": "26"
+      },
+      {
+        "Name": "实际签收人",
+        "SampleValue": "",
+        "ReferenceColumn": "实际签收人",
+        "Index": "27"
+      },
+      {
+        "Name": "备注",
+        "SampleValue": "防火，拣货单出货",
+        "ReferenceColumn": "备注",
+        "Index": "28"
+      },
+      {
+        "Name": "承运商",
+        "SampleValue": "惠仕物流",
+        "ReferenceColumn": "承运商",
+        "Index": "29"
+      }
+    ]
+  }
+
+]
