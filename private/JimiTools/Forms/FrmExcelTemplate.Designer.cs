@@ -39,7 +39,7 @@
             this.txtSplitColumn = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
+            this.lblInputCount = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.btnViewOutput = new System.Windows.Forms.Button();
             this.txtSaveFolder = new System.Windows.Forms.TextBox();
@@ -142,14 +142,13 @@
             this.label4.TabIndex = 9;
             this.label4.Text = "模板预览";
             // 
-            // label5
+            // lblInputCount
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(52, 180);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(55, 13);
-            this.label5.TabIndex = 10;
-            this.label5.Text = "数据预览";
+            this.lblInputCount.Location = new System.Drawing.Point(52, 180);
+            this.lblInputCount.Name = "lblInputCount";
+            this.lblInputCount.Size = new System.Drawing.Size(55, 69);
+            this.lblInputCount.TabIndex = 10;
+            this.lblInputCount.Text = "数据预览";
             // 
             // label6
             // 
@@ -180,13 +179,15 @@
             // btnCreate
             // 
             this.btnCreate.AutoSize = true;
+            this.btnCreate.BackColor = System.Drawing.Color.GreenYellow;
+            this.btnCreate.FlatAppearance.BorderColor = System.Drawing.Color.Aqua;
             this.btnCreate.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.btnCreate.Location = new System.Drawing.Point(122, 144);
             this.btnCreate.Name = "btnCreate";
             this.btnCreate.Size = new System.Drawing.Size(509, 30);
             this.btnCreate.TabIndex = 14;
             this.btnCreate.Text = "生成模板";
-            this.btnCreate.UseVisualStyleBackColor = true;
+            this.btnCreate.UseVisualStyleBackColor = false;
             this.btnCreate.Click += new System.EventHandler(this.btnCreate_Click);
             // 
             // label7
@@ -206,6 +207,7 @@
             this.cmbTemplateList.Name = "cmbTemplateList";
             this.cmbTemplateList.Size = new System.Drawing.Size(189, 21);
             this.cmbTemplateList.TabIndex = 16;
+            this.cmbTemplateList.SelectedIndexChanged += new System.EventHandler(this.cmbTemplateList_SelectedIndexChanged);
             // 
             // FrmExcelTemplate
             // 
@@ -218,7 +220,7 @@
             this.Controls.Add(this.btnViewOutput);
             this.Controls.Add(this.txtSaveFolder);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.label5);
+            this.Controls.Add(this.lblInputCount);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.txtSplitColumn);
             this.Controls.Add(this.label3);
@@ -252,7 +254,7 @@
         private System.Windows.Forms.TextBox txtSplitColumn;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label lblInputCount;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button btnViewOutput;
         private System.Windows.Forms.TextBox txtSaveFolder;
