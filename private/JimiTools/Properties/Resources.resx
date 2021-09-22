@@ -124,9 +124,6 @@
   <data name="010-astronomy" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\010-astronomy.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="退出" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\退出.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="047-books" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\047-books.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -135,5 +132,8 @@
   </data>
   <data name="weChartMe" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\weChartMe.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="exit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\exit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

@@ -79,7 +79,7 @@
             this.btnExit.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnExit.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.btnExit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.btnExit.Image = global::JimiTools.Properties.Resources.退出;
+            this.btnExit.Image = global::JimiTools.Properties.Resources.exit;
             this.btnExit.Location = new System.Drawing.Point(188, 382);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(159, 37);

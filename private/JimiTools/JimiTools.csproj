@@ -152,9 +152,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="048-books.ico" />
-    <Content Include="松鼠.ico" />
+    <None Include="Resources\exit.png" />
     <None Include="Resources\weChartMe.png" />
-    <None Include="Resources\退出.png" />
     <None Include="Resources\002-alarm clock.png" />
     <None Include="Resources\010-astronomy.png" />
     <None Include="Resources\005-exam.png" />
