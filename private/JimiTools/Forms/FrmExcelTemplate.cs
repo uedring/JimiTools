@@ -185,7 +185,7 @@ namespace JimiTools.Forms
                 return;
             }
 
-            Dictionary<string, string> filerParams = new Dictionary<string, string>();
+            Dictionary<string, Tuple<int,string>> filerParams = new Dictionary<string, Tuple<int, string>>();
 
             if (!string.IsNullOrWhiteSpace(txtFilter.Text))
             {
@@ -202,7 +202,7 @@ namespace JimiTools.Forms
                             return;
                         }
 
-                        filerParams[arr[0]] = arr[1];
+                        filerParams[arr[0]] = new Tuple<int, string>(item.Contains("!=")?0:1, arr[1]);
                     }
                     else
                     {
@@ -234,13 +234,54 @@ namespace JimiTools.Forms
 
             #endregion
 
+            var filterRows = new Dictionary<string, List<DataRow>>();
+            
+            foreach (DataRow row in inputTable.Rows)
+            {
+                var matchCount = filerParams.Count;
+                foreach (var p in filerParams)
+                {
+                    if (p.Value.Item1==0)
+                    {
+                        if ((row[p.Key] + "") != p.Value.Item2)
+                        {
+                            matchCount--;
+                        }
+                    }
+                    else
+                    {
+                        if ((row[p.Key] + "") == p.Value.Item2)
+                        {
+                            matchCount--;
+                        }
+                    }
+                    
+                }
 
-            CreateExcelTemplate(selectTemplate.OrderBy(r=>r.Index).ToList(), inputTable,DateTime.Now.ToString("MM-dd"));
+                if (matchCount<1)
+                {
+                    var splitColValue = row[txtSplitColumn.Text] + "";
+                    if (!filterRows.ContainsKey(splitColValue))
+                    {
+                        filterRows[splitColValue] = new List<DataRow>();
+
+                    }
+
+                    filterRows[splitColValue].Add(row);
+                }
+            }
+
+
+            foreach (var item in filterRows)
+            {
+                CreateExcelTemplate(selectTemplate.OrderBy(r => r.Index).ToList(), item.Value, item.Key+DateTime.Now.ToString("MM-dd"));
+            }
+
 
             MessageBox.Show($"生成模板数据成功！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        void CreateExcelTemplate(IList<ColumnsItem> columnsItems,DataTable inputData,string excelName)
+        void CreateExcelTemplate(IList<ColumnsItem> columnsItems,List<DataRow> rows,string excelName)
         {
             NPOI.XSSF.UserModel.XSSFWorkbook workbook = new NPOI.XSSF.UserModel.XSSFWorkbook();
             var sheet = workbook.CreateSheet("sheet1");
@@ -251,9 +292,9 @@ namespace JimiTools.Forms
                 headerRow.CreateCell(i).SetCellValue(columnsItems[i].Name);
             }
 
-            for (int i = 0; i < inputData.Rows.Count; i++)
+            for (int i = 0; i < rows.Count; i++)
             {
-                var dataRow = inputData.Rows[i];
+                var dataRow = rows[i];
                 var newRow = sheet.CreateRow(i + 1);
 
                 for (int j = 0; j < columnsItems.Count; j++)
