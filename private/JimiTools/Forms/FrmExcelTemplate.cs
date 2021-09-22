@@ -235,12 +235,12 @@ namespace JimiTools.Forms
             #endregion
 
 
-            CreateExcelTemplate(selectTemplate.OrderBy(r=>r.Index).ToList());
+            CreateExcelTemplate(selectTemplate.OrderBy(r=>r.Index).ToList(), inputTable,DateTime.Now.ToString("MM-dd"));
 
             MessageBox.Show($"生成模板数据成功！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        void CreateExcelTemplate(IList<ColumnsItem> columnsItems)
+        void CreateExcelTemplate(IList<ColumnsItem> columnsItems,DataTable inputData,string excelName)
         {
             NPOI.XSSF.UserModel.XSSFWorkbook workbook = new NPOI.XSSF.UserModel.XSSFWorkbook();
             var sheet = workbook.CreateSheet("sheet1");
@@ -251,9 +251,9 @@ namespace JimiTools.Forms
                 headerRow.CreateCell(i).SetCellValue(columnsItems[i].Name);
             }
 
-            for (int i = 0; i < inputTable.Rows.Count; i++)
+            for (int i = 0; i < inputData.Rows.Count; i++)
             {
-                var dataRow = inputTable.Rows[i];
+                var dataRow = inputData.Rows[i];
                 var newRow = sheet.CreateRow(i + 1);
 
                 for (int j = 0; j < columnsItems.Count; j++)
@@ -276,7 +276,7 @@ namespace JimiTools.Forms
                 Directory.CreateDirectory(txtSaveFolder.Text);
             }
 
-            var saveFile = Path.Combine(txtSaveFolder.Text,DateTime.Now.ToString("MM-dd")+".xlsx");
+            var saveFile = Path.Combine(txtSaveFolder.Text, excelName + ".xlsx");
 
             workbook.Write(new FileStream(saveFile, FileMode.Create));
 
