@@ -1,4 +1,5 @@
-﻿using JimiTools.Model;
+﻿using JimiTools.Helper;
+using JimiTools.Model;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -79,50 +80,71 @@ namespace JimiTools.Forms
         {
             Task.Run(() =>
             {
-                lock (latch)
+                try
                 {
-                    NPOI.XSSF.UserModel.XSSFWorkbook workbook = new NPOI.XSSF.UserModel.XSSFWorkbook(new FileStream(txtSource.Text, FileMode.Open, FileAccess.Read));
-                    var sheet = workbook.GetSheetAt(0);
-                    var headerRow = sheet.GetRow(0);
-                    var lastCellNum = headerRow.LastCellNum;
-
-                    inputTable = new DataTable();
-                    inputTable.Columns.Add(new DataColumn("行号"));
-
-                    for (int i = 0; i < lastCellNum; i++)
+                    lock (latch)
                     {
-                        inputTable.Columns.Add(new DataColumn(headerRow.GetCell(i).StringCellValue));
-                    }
+                        NPOI.XSSF.UserModel.XSSFWorkbook workbook = new NPOI.XSSF.UserModel.XSSFWorkbook(new FileStream(txtSource.Text, FileMode.Open, FileAccess.Read));
+                        var sheet = workbook.GetSheetAt(0);
+                        var headerRow = sheet.GetRow(0);
+                        var lastCellNum = headerRow.LastCellNum;
 
-                    for (int i = 1; i <= sheet.LastRowNum; i++)
-                    {
-                        var currentRow = sheet.GetRow(i);
+                        inputTable = new DataTable();
+                        inputTable.Columns.Add(new DataColumn("行号"));
 
-                        var newRow = inputTable.NewRow();
-                        newRow[0] = i;
-                        for (int j = 0; j < lastCellNum; j++)
+                        for (int i = 0; i < lastCellNum; i++)
                         {
-                            newRow[j + 1] = GetCellValue(currentRow.GetCell(j));
+                            inputTable.Columns.Add(new DataColumn(headerRow.GetCell(i).StringCellValue));
                         }
-                        inputTable.Rows.Add(newRow);
-                    }
 
+                        for (int i = 1; i <= sheet.LastRowNum; i++)
+                        {
+                            var currentRow = sheet.GetRow(i);
+
+                            if (currentRow == null)
+                            {
+                                continue;
+                            }
+
+                            var newRow = inputTable.NewRow();
+                            newRow[0] = i;
+                            for (int j = 0; j < lastCellNum; j++)
+                            {
+                                newRow[j + 1] = GetCellValue(currentRow.GetCell(j));
+                            }
+                            inputTable.Rows.Add(newRow);
+                        }
+
+                        syncContext.Post(d =>
+                        {
+                            lblInputCount.Text = "数据预览\r\n\r\n行数 " + (sheet.LastRowNum + 1).ToString() + Environment.NewLine + "含表头";
+
+                            dgvSource.DataSource = inputTable;
+
+                        }, null);
+                    }
+                }
+                catch (Exception ex)
+                {
                     syncContext.Post(d =>
                     {
-                        lblInputCount.Text = "数据预览\r\n\r\n行数 " + (sheet.LastRowNum + 1).ToString() + Environment.NewLine + "含表头";
-                        dgvSource.Columns.Clear();
-                        dgvSource.Rows.Clear();
+                        MessageBox.Show(d.ToString(), "系统错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        LoggerHelper.Error(d.ToString());
 
-                        dgvSource.DataSource = inputTable;
-
-                    }, null);
+                    }, ex.Message+Environment.NewLine+ex.StackTrace);
                 }
+
 
             });
         }
 
         object GetCellValue(NPOI.SS.UserModel.ICell cell)
         {
+            if (cell == null)
+            {
+                return string.Empty;
+            }
+
             if (cell.CellType == NPOI.SS.UserModel.CellType.Numeric)
             {
                 return cell.NumericCellValue;
@@ -181,7 +203,7 @@ namespace JimiTools.Forms
 
             if (inputTable.Rows.Count < 1)
             {
-                MessageBox.Show($"选择的表无任何数据，无法执行此操作", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"选择的表无任何数据，无法执行此操作", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -198,7 +220,7 @@ namespace JimiTools.Forms
 
                         if (!inputTable.Columns.Contains(arr[0]))
                         {
-                            MessageBox.Show($"筛选列名：[{arr[0]}] 不存在于表中", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show($"筛选列名：[{arr[0]}] 不存在于表中", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             return;
                         }
 
@@ -214,14 +236,14 @@ namespace JimiTools.Forms
 
             if (string.IsNullOrWhiteSpace(txtSplitColumn.Text) || !inputTable.Columns.Contains(txtSplitColumn.Text.Trim()))
             {
-                MessageBox.Show($"拆分列名：[txtSplitColumn.Text] 不存在于表中", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"拆分列名：[txtSplitColumn.Text] 不存在于表中", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
 
 
             if (!templateList.Any())
             {
-                MessageBox.Show($"模板配置不存在", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"模板配置不存在", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
             var selectTemplate = templateList.FirstOrDefault(r => r.TemplateName == cmbTemplateList.SelectedValue.ToString()).Columns.OrderBy(r => r.Index).ToList();
@@ -229,7 +251,24 @@ namespace JimiTools.Forms
 
             if (!selectTemplate.Any())
             {
-                MessageBox.Show($"模板配置不存在", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"模板配置不存在", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
+            var columnNameValidate = new List<string>();
+            foreach (var item in selectTemplate)
+            {
+                if (!string.IsNullOrWhiteSpace(item.ReferenceColumn) && !inputTable.Columns.Contains(item.ReferenceColumn))
+                {
+                    columnNameValidate.Add(item.ReferenceColumn);
+                }
+            }
+
+            if (columnNameValidate.Any())
+            {
+                columnNameValidate.Insert(0,"选择的数据表格：\r\n" + txtSource.Text + "\r\n不包含列名：\r\n");
+
+                MessageBox.Show(string.Join(Environment.NewLine, columnNameValidate), "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
 
             #endregion
