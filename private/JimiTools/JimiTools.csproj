@@ -83,6 +83,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\FrmDeliveryTime.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmDeliveryTime.Designer.cs">
+      <DependentUpon>FrmDeliveryTime.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FrmExcelTemplate.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -112,6 +118,9 @@
     <Compile Include="Model\ExcelTemplate.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Forms\FrmDeliveryTime.resx">
+      <DependentUpon>FrmDeliveryTime.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmExcelTemplate.resx">
       <DependentUpon>FrmExcelTemplate.cs</DependentUpon>
     </EmbeddedResource>
@@ -137,6 +146,7 @@
     <None Include="Data\ExcelTemplate.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Data\喜利得时效11.xls" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -165,6 +175,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="048-books.ico" />
+    <Content Include="Data\HiltiDeliveryTime.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Resources\exit.png" />
     <None Include="Resources\weChartMe.png" />
     <None Include="Resources\002-alarm clock.png" />

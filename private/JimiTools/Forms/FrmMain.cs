@@ -43,7 +43,10 @@ namespace JimiTools
 
         private void btnTime_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("开发中....敬请期待！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            var frm = new FrmDeliveryTime();
+            this.Hide();
+            frm.ShowDialog();
+            this.Show();
         }
 
         private void linkAuthor_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
