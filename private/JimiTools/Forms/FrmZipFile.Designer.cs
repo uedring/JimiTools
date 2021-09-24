@@ -62,11 +62,12 @@
             // 
             this.btnZip.BackColor = System.Drawing.SystemColors.Control;
             this.btnZip.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnZip.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnZip.Image = global::JimiTools.Properties.Resources._047_books;
             this.btnZip.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnZip.Location = new System.Drawing.Point(110, 132);
             this.btnZip.Name = "btnZip";
-            this.btnZip.Size = new System.Drawing.Size(617, 23);
+            this.btnZip.Size = new System.Drawing.Size(617, 36);
             this.btnZip.TabIndex = 1;
             this.btnZip.Text = "批量压缩";
             this.btnZip.UseVisualStyleBackColor = false;
