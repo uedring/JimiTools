@@ -33,9 +33,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.btnCreateTemplate = new System.Windows.Forms.Button();
             this.btnExit = new System.Windows.Forms.Button();
-            this.btnDeliveryArea = new System.Windows.Forms.Button();
             this.btnTime = new System.Windows.Forms.Button();
-            this.btnReportAudit = new System.Windows.Forms.Button();
             this.btnZipFile = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -88,21 +86,6 @@
             this.btnExit.UseVisualStyleBackColor = true;
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
-            // btnDeliveryArea
-            // 
-            this.btnDeliveryArea.FlatAppearance.BorderSize = 0;
-            this.btnDeliveryArea.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnDeliveryArea.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btnDeliveryArea.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.btnDeliveryArea.Image = global::JimiTools.Properties.Resources._010_astronomy;
-            this.btnDeliveryArea.Location = new System.Drawing.Point(68, 228);
-            this.btnDeliveryArea.Name = "btnDeliveryArea";
-            this.btnDeliveryArea.Size = new System.Drawing.Size(159, 37);
-            this.btnDeliveryArea.TabIndex = 3;
-            this.btnDeliveryArea.Text = "派送区域查询";
-            this.btnDeliveryArea.UseVisualStyleBackColor = true;
-            this.btnDeliveryArea.Click += new System.EventHandler(this.btnDeliveryArea_Click);
-            // 
             // btnTime
             // 
             this.btnTime.FlatAppearance.BorderSize = 0;
@@ -110,28 +93,13 @@
             this.btnTime.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.btnTime.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.btnTime.Image = global::JimiTools.Properties.Resources._002_alarm_clock;
-            this.btnTime.Location = new System.Drawing.Point(329, 228);
+            this.btnTime.Location = new System.Drawing.Point(188, 163);
             this.btnTime.Name = "btnTime";
             this.btnTime.Size = new System.Drawing.Size(159, 37);
             this.btnTime.TabIndex = 2;
-            this.btnTime.Text = "时效查询";
+            this.btnTime.Text = "时效审核查询";
             this.btnTime.UseVisualStyleBackColor = true;
             this.btnTime.Click += new System.EventHandler(this.btnTime_Click);
-            // 
-            // btnReportAudit
-            // 
-            this.btnReportAudit.FlatAppearance.BorderSize = 0;
-            this.btnReportAudit.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnReportAudit.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btnReportAudit.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.btnReportAudit.Image = global::JimiTools.Properties.Resources._005_exam;
-            this.btnReportAudit.Location = new System.Drawing.Point(188, 150);
-            this.btnReportAudit.Name = "btnReportAudit";
-            this.btnReportAudit.Size = new System.Drawing.Size(159, 37);
-            this.btnReportAudit.TabIndex = 1;
-            this.btnReportAudit.Text = "报表文件审核";
-            this.btnReportAudit.UseVisualStyleBackColor = true;
-            this.btnReportAudit.Click += new System.EventHandler(this.btnReportAudit_Click);
             // 
             // btnZipFile
             // 
@@ -155,9 +123,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.linkAuthor);
             this.Controls.Add(this.btnExit);
-            this.Controls.Add(this.btnDeliveryArea);
             this.Controls.Add(this.btnTime);
-            this.Controls.Add(this.btnReportAudit);
             this.Controls.Add(this.btnZipFile);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -173,9 +139,7 @@
         #endregion
 
         private System.Windows.Forms.Button btnZipFile;
-        private System.Windows.Forms.Button btnReportAudit;
         private System.Windows.Forms.Button btnTime;
-        private System.Windows.Forms.Button btnDeliveryArea;
         private System.Windows.Forms.Button btnExit;
         private System.Windows.Forms.LinkLabel linkAuthor;
         private System.Windows.Forms.Label label1;

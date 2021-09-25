@@ -29,8 +29,24 @@ namespace JimiTools.Forms
                 return;
             }
 
-            var address = txtAddress.Text.Trim().ToCharArray().ToList();
             Tuple<string, int> matchDelivery = null;
+            var addressText = txtAddress.Text.Trim();
+
+            var addressLevel3 = GetAddressLevel3(addressText);
+            if (addressLevel3!=null)
+            {
+                if (DeliveryTime.ContainsKey(addressLevel3))
+                {
+                    txtResult.Text += addressText + "\t"
+                        +  $"匹配区域： {addressLevel3}\t时效: {DeliveryTime[addressLevel3].Item2} 天"
+                        + Environment.NewLine;
+                    ScrollToBottom();
+                    return;
+                }
+            }
+
+            var address = addressText.ToCharArray().ToList();
+
             var matchKey = string.Empty;
             while (address.Count>1)
             {
@@ -43,9 +59,34 @@ namespace JimiTools.Forms
                 address.RemoveAt(address.Count - 1);
             }
 
-            txtResult.Text += txtAddress.Text.Trim() + "\t"
+            txtResult.Text += addressText + "\t"
                 + (matchDelivery == null ? "无匹配结果" : $"匹配区域： {matchKey}\t时效: {matchDelivery.Item2} 天")
                 + Environment.NewLine;
+            ScrollToBottom();
+        }
+
+        void ScrollToBottom()
+        {
+            txtResult.SelectionStart = txtResult.Text.Length;
+            txtResult.ScrollToCaret();
+        }
+
+        public static string GetAddressLevel3(string address)
+        {
+            if (string.IsNullOrWhiteSpace(address))
+            {
+                return null;
+            }
+            var addressSeparator = "省市区县镇".ToCharArray();
+
+            var arr= address.Split(addressSeparator);
+
+            if (arr.Length>2)
+            {
+                return arr[0] + arr[2];
+            }
+
+            return null;
         }
 
         void BuildDeliveryTime()
@@ -59,6 +100,7 @@ namespace JimiTools.Forms
             var deliveryTimeContent = File.ReadAllLines(deliveryTimeFile);
             var municipality = "上海,北京,天津,重庆";
             var specialProvince = "黑龙江,内蒙古";
+
             foreach (var item in deliveryTimeContent)
             {
                 var vals = item.Split("\t".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
@@ -85,6 +127,11 @@ namespace JimiTools.Forms
             int i;
             int.TryParse(s, out i);
             return i;
+        }
+
+        private void btnAudit_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -31,16 +31,6 @@ namespace JimiTools
             this.Close();
         }
 
-        private void btnReportAudit_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("开发中....敬请期待！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        private void btnDeliveryArea_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("开发中....敬请期待！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
         private void btnTime_Click(object sender, EventArgs e)
         {
             var frm = new FrmDeliveryTime();
