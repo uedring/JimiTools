@@ -114,12 +114,14 @@
       <DependentUpon>FrmZipFile.cs</DependentUpon>
     </Compile>
     <Compile Include="Helper\AutoAdaptWindowsSize.cs" />
+    <Compile Include="Helper\Extention.cs" />
     <Compile Include="Helper\LoggerHelper.cs" />
     <Compile Include="Model\ExcelTemplate.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Forms\FrmDeliveryTime.resx">
       <DependentUpon>FrmDeliveryTime.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmExcelTemplate.resx">
       <DependentUpon>FrmExcelTemplate.cs</DependentUpon>

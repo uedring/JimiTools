@@ -24,13 +24,15 @@
         "Name": "订单编号",
         "SampleValue": "279536908",
         "ReferenceColumn": "订单编号",
-        "Index": 4
+        "Index": 4,
+        "ValueType": "Numeric"
       },
       {
         "Name": "客户编号",
         "SampleValue": "16373277",
         "ReferenceColumn": "客户编号",
-        "Index": 5
+        "Index": 5,
+        "ValueType": "Numeric"
       },
       {
         "Name": "客户名称",
@@ -78,7 +80,8 @@
         "Name": "重量",
         "SampleValue": "916.3",
         "ReferenceColumn": "毛重_(KG)",
-        "Index": 13
+        "Index": 13,
+        "ValueType": "Numeric"
       },
       {
         "Name": "运输方式",

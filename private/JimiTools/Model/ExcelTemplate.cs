@@ -24,6 +24,7 @@ namespace JimiTools.Model
         /// 
         /// </summary>
         public int Index { get; set; }
+        public string ValueType { get; set; }
     }
 
     public class ExcelTemplate

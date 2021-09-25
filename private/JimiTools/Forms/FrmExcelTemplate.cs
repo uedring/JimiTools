@@ -326,9 +326,21 @@ namespace JimiTools.Forms
             var sheet = workbook.CreateSheet("sheet1");
             var headerRow = sheet.CreateRow(0);
 
+            var cellFont = workbook.CreateFont();
+            cellFont.FontName = "SimSun";
+            cellFont.FontHeightInPoints = 9;
+
+            var cellStyle = workbook.CreateCellStyle();
+            cellStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+            cellStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+            cellStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+            cellStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+            cellStyle.SetFont(cellFont);
+
+
             for (int i = 0; i < columnsItems.Count; i++)
             {
-                headerRow.CreateCell(i).SetCellValue(columnsItems[i].Name);
+                headerRow.CreateCell(i, cellStyle).SetCellValue(columnsItems[i].Name);
             }
 
             for (int i = 0; i < rows.Count; i++)
@@ -346,7 +358,17 @@ namespace JimiTools.Forms
                         cellValue = dataRow[columnInfo.ReferenceColumn] + "";
                     }
 
-                    newRow.CreateCell(j).SetCellValue(cellValue);
+                    if (columnInfo.ValueType == "Numeric" && cellValue.IsNumeric())
+                    {
+                        newRow.CreateCell(j, cellStyle).SetCellValue(cellValue.ToNumeric());
+                    }
+                    else
+                    {
+                        newRow.CreateCell(j, cellStyle).SetCellValue(cellValue);
+                    }
+
+                    
+
                 }
             }
 
