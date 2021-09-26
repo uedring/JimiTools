@@ -110,7 +110,7 @@ namespace JimiTools.Forms
                             newRow[0] = i;
                             for (int j = 0; j < lastCellNum; j++)
                             {
-                                newRow[j + 1] = GetCellValue(currentRow.GetCell(j));
+                                newRow[j + 1] = currentRow.GetCell(j).GetCellValue(" 0:00:00");
                             }
                             inputTable.Rows.Add(newRow);
                         }
@@ -138,27 +138,6 @@ namespace JimiTools.Forms
             });
         }
 
-        object GetCellValue(NPOI.SS.UserModel.ICell cell)
-        {
-            if (cell == null)
-            {
-                return string.Empty;
-            }
-
-            if (cell.CellType == NPOI.SS.UserModel.CellType.Numeric)
-            {
-                return cell.NumericCellValue;
-            }
-            else if (cell.CellType == NPOI.SS.UserModel.CellType.Boolean)
-            {
-                return cell.BooleanCellValue.ToString();
-            }
-            else
-            {
-                return cell.StringCellValue.Replace(" 0:00:00", "");
-            }
-        }
-
         private void txtSource_TextChanged(object sender, EventArgs e)
         {
             txtSaveFolder.Text = Path.Combine(Path.GetDirectoryName(txtSource.Text), "生成成功");
@@ -175,7 +154,7 @@ namespace JimiTools.Forms
 
             openFileDialog.FileName = txtSource.Text;
             openFileDialog.Multiselect = false;
-            openFileDialog.Filter = "*.xls|*.xlsx";
+            openFileDialog.Filter = "Excel数据表|*.xlsx";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 txtSource.Text = openFileDialog.FileName;

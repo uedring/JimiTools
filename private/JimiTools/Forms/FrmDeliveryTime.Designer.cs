@@ -51,7 +51,12 @@
             this.txtInputExcel = new System.Windows.Forms.TextBox();
             this.txtSelectFile = new System.Windows.Forms.Button();
             this.btnAudit = new System.Windows.Forms.Button();
+            this.txtSavePath = new System.Windows.Forms.TextBox();
+            this.btnViewOutput = new System.Windows.Forms.Button();
+            this.label10 = new System.Windows.Forms.Label();
+            this.dgvInputExcel = new System.Windows.Forms.DataGridView();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvInputExcel)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -88,7 +93,7 @@
             this.txtResult.Multiline = true;
             this.txtResult.Name = "txtResult";
             this.txtResult.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtResult.Size = new System.Drawing.Size(539, 150);
+            this.txtResult.Size = new System.Drawing.Size(539, 99);
             this.txtResult.TabIndex = 3;
             // 
             // label2
@@ -102,14 +107,15 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.BackColor = System.Drawing.SystemColors.Control;
             this.groupBox1.Controls.Add(this.txtAddress);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.txtResult);
             this.groupBox1.Controls.Add(this.btnSearch);
-            this.groupBox1.Location = new System.Drawing.Point(12, 199);
+            this.groupBox1.Location = new System.Drawing.Point(12, 330);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(748, 289);
+            this.groupBox1.Size = new System.Drawing.Size(748, 241);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "查询时效";
@@ -117,7 +123,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(44, 14);
+            this.label3.Location = new System.Drawing.Point(44, 16);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(79, 13);
             this.label3.TabIndex = 6;
@@ -125,7 +131,7 @@
             // 
             // txtSendDate
             // 
-            this.txtSendDate.Location = new System.Drawing.Point(129, 7);
+            this.txtSendDate.Location = new System.Drawing.Point(129, 12);
             this.txtSendDate.Name = "txtSendDate";
             this.txtSendDate.Size = new System.Drawing.Size(100, 20);
             this.txtSendDate.TabIndex = 7;
@@ -142,7 +148,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(277, 13);
+            this.label4.Location = new System.Drawing.Point(277, 16);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(79, 13);
             this.label4.TabIndex = 8;
@@ -159,7 +165,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(483, 15);
+            this.label5.Location = new System.Drawing.Point(483, 16);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(79, 13);
             this.label5.TabIndex = 10;
@@ -167,7 +173,7 @@
             // 
             // txtRevieveDate
             // 
-            this.txtRevieveDate.Location = new System.Drawing.Point(129, 62);
+            this.txtRevieveDate.Location = new System.Drawing.Point(129, 58);
             this.txtRevieveDate.Name = "txtRevieveDate";
             this.txtRevieveDate.Size = new System.Drawing.Size(100, 20);
             this.txtRevieveDate.TabIndex = 13;
@@ -176,7 +182,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(44, 66);
+            this.label6.Location = new System.Drawing.Point(44, 62);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(79, 13);
             this.label6.TabIndex = 12;
@@ -184,7 +190,7 @@
             // 
             // txtSendStatus
             // 
-            this.txtSendStatus.Location = new System.Drawing.Point(362, 62);
+            this.txtSendStatus.Location = new System.Drawing.Point(362, 58);
             this.txtSendStatus.Name = "txtSendStatus";
             this.txtSendStatus.Size = new System.Drawing.Size(100, 20);
             this.txtSendStatus.TabIndex = 15;
@@ -193,7 +199,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(277, 65);
+            this.label7.Location = new System.Drawing.Point(277, 62);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(79, 13);
             this.label7.TabIndex = 14;
@@ -210,7 +216,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(483, 66);
+            this.label8.Location = new System.Drawing.Point(483, 62);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(91, 13);
             this.label8.TabIndex = 16;
@@ -229,8 +235,9 @@
             // 
             this.txtInputExcel.Location = new System.Drawing.Point(129, 107);
             this.txtInputExcel.Name = "txtInputExcel";
-            this.txtInputExcel.Size = new System.Drawing.Size(462, 20);
+            this.txtInputExcel.Size = new System.Drawing.Size(480, 20);
             this.txtInputExcel.TabIndex = 19;
+            this.txtInputExcel.TextChanged += new System.EventHandler(this.txtInputExcel_TextChanged);
             // 
             // txtSelectFile
             // 
@@ -240,22 +247,66 @@
             this.txtSelectFile.TabIndex = 20;
             this.txtSelectFile.Text = "选择文件";
             this.txtSelectFile.UseVisualStyleBackColor = true;
+            this.txtSelectFile.Click += new System.EventHandler(this.txtSelectFile_Click);
             // 
             // btnAudit
             // 
-            this.btnAudit.Location = new System.Drawing.Point(129, 144);
+            this.btnAudit.BackColor = System.Drawing.Color.LawnGreen;
+            this.btnAudit.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAudit.Location = new System.Drawing.Point(129, 283);
             this.btnAudit.Name = "btnAudit";
-            this.btnAudit.Size = new System.Drawing.Size(561, 23);
+            this.btnAudit.Size = new System.Drawing.Size(561, 29);
             this.btnAudit.TabIndex = 21;
-            this.btnAudit.Text = "审核表格订单时效";
-            this.btnAudit.UseVisualStyleBackColor = true;
+            this.btnAudit.Text = "表格订单时效审核";
+            this.btnAudit.UseVisualStyleBackColor = false;
             this.btnAudit.Click += new System.EventHandler(this.btnAudit_Click);
+            // 
+            // txtSavePath
+            // 
+            this.txtSavePath.Location = new System.Drawing.Point(129, 243);
+            this.txtSavePath.Name = "txtSavePath";
+            this.txtSavePath.Size = new System.Drawing.Size(480, 20);
+            this.txtSavePath.TabIndex = 22;
+            // 
+            // btnViewOutput
+            // 
+            this.btnViewOutput.Location = new System.Drawing.Point(615, 242);
+            this.btnViewOutput.Name = "btnViewOutput";
+            this.btnViewOutput.Size = new System.Drawing.Size(75, 23);
+            this.btnViewOutput.TabIndex = 23;
+            this.btnViewOutput.Text = "查看结果";
+            this.btnViewOutput.UseVisualStyleBackColor = true;
+            this.btnViewOutput.Click += new System.EventHandler(this.btnViewOutput_Click);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(44, 247);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(79, 13);
+            this.label10.TabIndex = 24;
+            this.label10.Text = "结果保存位置";
+            // 
+            // dgvInputExcel
+            // 
+            this.dgvInputExcel.AllowUserToAddRows = false;
+            this.dgvInputExcel.AllowUserToDeleteRows = false;
+            this.dgvInputExcel.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvInputExcel.Location = new System.Drawing.Point(129, 129);
+            this.dgvInputExcel.Name = "dgvInputExcel";
+            this.dgvInputExcel.ReadOnly = true;
+            this.dgvInputExcel.Size = new System.Drawing.Size(561, 103);
+            this.dgvInputExcel.TabIndex = 25;
             // 
             // FrmDeliveryTime
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(772, 500);
+            this.ClientSize = new System.Drawing.Size(772, 583);
+            this.Controls.Add(this.dgvInputExcel);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.btnViewOutput);
+            this.Controls.Add(this.txtSavePath);
             this.Controls.Add(this.btnAudit);
             this.Controls.Add(this.txtSelectFile);
             this.Controls.Add(this.txtInputExcel);
@@ -278,6 +329,7 @@
             this.Text = "时效审核查询";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvInputExcel)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -307,5 +359,9 @@
         private System.Windows.Forms.TextBox txtInputExcel;
         private System.Windows.Forms.Button txtSelectFile;
         private System.Windows.Forms.Button btnAudit;
+        private System.Windows.Forms.TextBox txtSavePath;
+        private System.Windows.Forms.Button btnViewOutput;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.DataGridView dgvInputExcel;
     }
 }

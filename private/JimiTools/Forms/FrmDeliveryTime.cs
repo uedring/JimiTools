@@ -1,4 +1,6 @@
-﻿using System;
+﻿using JimiTools.Helper;
+using JimiTools.Model;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -6,6 +8,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -14,9 +17,18 @@ namespace JimiTools.Forms
     public partial class FrmDeliveryTime : Form
     {
         static Dictionary<string, Tuple<string, int>> DeliveryTime = new Dictionary<string, Tuple<string, int>>();
+        DataTable inputTable = new DataTable();
+        private readonly object latch = new object();
+        SynchronizationContext syncContext = null;
+
+
         public FrmDeliveryTime()
         {
             InitializeComponent();
+
+            syncContext = SynchronizationContext.Current;
+
+            txtInputExcel.Text = Properties.Settings.Default.ExcelDeliveryTimeSource;
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
@@ -129,9 +141,228 @@ namespace JimiTools.Forms
             return i;
         }
 
+        private void txtSelectFile_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+
+            openFileDialog.FileName = txtInputExcel.Text;
+            openFileDialog.Multiselect = false;
+            openFileDialog.Filter = "Excel数据表|*.xlsx";
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                txtInputExcel.Text = openFileDialog.FileName;
+
+                Properties.Settings.Default.ExcelDeliveryTimeSource = txtInputExcel.Text;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        private void btnViewOutput_Click(object sender, EventArgs e)
+        {
+            if (Directory.Exists(txtSavePath.Text))
+            {
+                System.Diagnostics.Process.Start(txtSavePath.Text);
+            }
+            else
+            {
+                MessageBox.Show($"保存目录不存在，请先执行审核操作！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void txtInputExcel_TextChanged(object sender, EventArgs e)
+        {
+            txtSavePath.Text = Path.Combine(Path.GetDirectoryName(txtInputExcel.Text), "时效审核结果");
+
+            InitInputGridData();
+        }
+
+        void InitInputGridData()
+        {
+            if (!File.Exists(txtInputExcel.Text))
+            {
+                inputTable = new DataTable();
+                dgvInputExcel.DataSource = inputTable;
+                return;
+            }
+
+            Task.Run(() =>
+            {
+                try
+                {
+                    lock (latch)
+                    {
+                        NPOI.XSSF.UserModel.XSSFWorkbook workbook = new NPOI.XSSF.UserModel.XSSFWorkbook(new FileStream(txtInputExcel.Text, FileMode.Open, FileAccess.Read));
+                        var sheet = workbook.GetSheetAt(0);
+                        var headerRow = sheet.GetRow(0);
+                        var lastCellNum = headerRow.LastCellNum;
+
+                        inputTable = new DataTable();
+                        inputTable.Columns.Add(new DataColumn("行号"));
+
+                        for (int i = 0; i < lastCellNum; i++)
+                        {
+                            inputTable.Columns.Add(new DataColumn(headerRow.GetCell(i).StringCellValue));
+                        }
+
+                        for (int i = 1; i <= sheet.LastRowNum; i++)
+                        {
+                            var currentRow = sheet.GetRow(i);
+
+                            if (currentRow == null)
+                            {
+                                continue;
+                            }
+
+                            var newRow = inputTable.NewRow();
+                            newRow[0] = i;
+                            for (int j = 0; j < lastCellNum; j++)
+                            {
+                                newRow[j + 1] = currentRow.GetCell(j).GetCellValue();
+                            }
+                            inputTable.Rows.Add(newRow);
+                        }
+
+                        syncContext.Post(d =>
+                        {
+                            dgvInputExcel.DataSource = inputTable;
+
+                        }, null);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    syncContext.Post(d =>
+                    {
+                        MessageBox.Show(d.ToString(), "系统错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        LoggerHelper.Error(d.ToString());
+
+                    }, ex.Message + Environment.NewLine + ex.StackTrace);
+                }
+
+
+            });
+        }
+
+        public DeliveryTimeFilter DeliveryTimeFilter
+        {
+            get
+            {
+                return new DeliveryTimeFilter()
+                {
+                    Address = txtToAddress.Text.Trim(),
+                    RecieveDate = txtRevieveDate.Text.Trim(),
+                    SendCity = txtToCity.Text.Trim(),
+                    SendDate = txtSendDate.Text.Trim(),
+                    SendStatus = txtSendStatus.Text.Trim(),
+                };
+            }
+        }
+
         private void btnAudit_Click(object sender, EventArgs e)
         {
+            if (inputTable.Rows.Count < 1)
+            {
+                MessageBox.Show($"选择的表无任何数据，无法执行此操作", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
+            // Read input excel
+            NPOI.XSSF.UserModel.XSSFWorkbook inputWorkbook = new NPOI.XSSF.UserModel.XSSFWorkbook(new FileStream(txtInputExcel.Text, FileMode.Open, FileAccess.Read));
+            var inputSheet = inputWorkbook.GetSheetAt(0);
+
+            // Check headers exists
+            int colIdx = 0;
+            var inputFirstRow = inputSheet.GetRow(0);
+            var inputHeaders = new HashSet<string>();
+            while (true)
+            {
+                var cell = inputFirstRow.GetCell(colIdx++);
+                if (cell==null)
+                {
+                    break;
+                }
+                inputHeaders.Add(cell.GetCellStringValue());
+            }
+
+            var deliveryTimeFilter = this.DeliveryTimeFilter;
+            var deliveryTimeFilterSet = deliveryTimeFilter.GetType().GetProperties().Select(r => r.GetValue(deliveryTimeFilter) + "").ToHashSet<string>();
+            var notFoundCols = deliveryTimeFilterSet.Except(inputHeaders);
+
+            if (notFoundCols.Any())
+            {
+                MessageBox.Show($"所选的表格不包含以下列，无法进行时效审核！\r\n\r\n"+string.Join(Environment.NewLine,notFoundCols), "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Create output excel
+            NPOI.XSSF.UserModel.XSSFWorkbook outputWorkbook = new NPOI.XSSF.UserModel.XSSFWorkbook();
+            var sheet = outputWorkbook.CreateSheet("sheet1");
+            var headerRow = sheet.CreateRow(0);
+
+            var cellFont = outputWorkbook.CreateFont();
+            cellFont.FontName = "SimSun";
+            cellFont.FontHeightInPoints = 9;
+
+            var cellStyle = outputWorkbook.CreateCellStyle();
+            cellStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+            cellStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+            cellStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+            cellStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+            cellStyle.SetFont(cellFont);
+
+            var columns = "客户运单号,收货人姓名,收货人电话,送货地址,按时效应到日期,预计到货日日期".Split(',');
+
+            for (int i = 0; i < columns.Length; i++)
+            {
+                headerRow.CreateCell(i, cellStyle).SetCellValue(columns[i]);
+            }
+
+
+
+
+
+            //for (int i = 0; i < rows.Count; i++)
+            //{
+            //    var dataRow = rows[i];
+            //    var newRow = sheet.CreateRow(i + 1);
+
+            //    for (int j = 0; j < columnsItems.Count; j++)
+            //    {
+            //        var columnInfo = columnsItems[j];
+            //        string cellValue = string.Empty;
+
+            //        if (!string.IsNullOrWhiteSpace(columnInfo.ReferenceColumn))
+            //        {
+            //            cellValue = dataRow[columnInfo.ReferenceColumn] + "";
+            //        }
+
+            //        if (columnInfo.ValueType == "Numeric" && cellValue.IsNumeric())
+            //        {
+            //            newRow.CreateCell(j, cellStyle).SetCellValue(cellValue.ToNumeric());
+            //        }
+            //        else
+            //        {
+            //            newRow.CreateCell(j, cellStyle).SetCellValue(cellValue);
+            //        }
+
+
+
+            //    }
+            //}
+
+
+            if (!Directory.Exists(txtSavePath.Text))
+            {
+                Directory.CreateDirectory(txtSavePath.Text);
+            }
+
+            var saveFile = Path.Combine(txtSavePath.Text, "时效结果" + ".xlsx");
+
+            outputWorkbook.Write(new FileStream(saveFile, FileMode.Create));
+
+
+            MessageBox.Show("审核完成！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+
     }
 }

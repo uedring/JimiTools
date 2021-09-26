@@ -35,6 +35,56 @@ namespace JimiTools
             return newCell;
         }
 
+        public static object GetCellValue(this NPOI.SS.UserModel.ICell cell,string replaceValue="")
+        {
+            if (cell == null)
+            {
+                return string.Empty;
+            }
+
+            if (cell.CellType == NPOI.SS.UserModel.CellType.Numeric)
+            {
+                return cell.NumericCellValue;
+            }
+            else if (cell.CellType == NPOI.SS.UserModel.CellType.Boolean)
+            {
+                return cell.BooleanCellValue.ToString();
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(replaceValue))
+                {
+                    return cell.StringCellValue;
+                }
+                else
+                {
+                    return cell.StringCellValue.Replace(replaceValue, "");
+                }
+            }
+        }
+
+        public static string GetCellStringValue(this NPOI.SS.UserModel.ICell cell)
+        {
+            if (cell == null)
+            {
+                return string.Empty;
+            }
+
+            if (cell.CellType == NPOI.SS.UserModel.CellType.Numeric)
+            {
+                return cell.NumericCellValue.ToString();
+            }
+            else if (cell.CellType == NPOI.SS.UserModel.CellType.Boolean)
+            {
+                return cell.BooleanCellValue.ToString();
+            }
+            else
+            {
+                return cell.StringCellValue;
+            }
+        }
+
+
         public static bool IsNumeric(this string s)
         {
             if (string.IsNullOrWhiteSpace(s))

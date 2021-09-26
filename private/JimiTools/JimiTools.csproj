@@ -95,6 +95,12 @@
     <Compile Include="Forms\FrmExcelTemplate.Designer.cs">
       <DependentUpon>FrmExcelTemplate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FrmLoading.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FrmLoading.Designer.cs">
+      <DependentUpon>FrmLoading.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FrmMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -116,6 +122,7 @@
     <Compile Include="Helper\AutoAdaptWindowsSize.cs" />
     <Compile Include="Helper\Extention.cs" />
     <Compile Include="Helper\LoggerHelper.cs" />
+    <Compile Include="Model\DeliveryTimeFilter.cs" />
     <Compile Include="Model\ExcelTemplate.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -125,6 +132,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmExcelTemplate.resx">
       <DependentUpon>FrmExcelTemplate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FrmLoading.resx">
+      <DependentUpon>FrmLoading.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\FrmMain.resx">
       <DependentUpon>FrmMain.cs</DependentUpon>
