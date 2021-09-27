@@ -35,6 +35,35 @@ namespace JimiTools
             return newCell;
         }
 
+        public static ICell SetCellValueFromObject(this ICell cell,object value)
+        {
+            if (value==null)
+            {
+                cell.SetCellValue(string.Empty);
+            }
+            else
+            {
+                if (value.ToString().IsNumeric())
+                {
+                    cell.SetCellValue(value.ToString().ToNumeric());
+                }
+                else
+                {
+                    cell.SetCellValue(value.ToString());
+                }
+            }
+
+            return cell;
+        }
+
+        public static DateTime ToDateTime(this string s)
+        {
+            DateTime d;
+            DateTime.TryParse(s, out d);
+
+            return d;
+        }
+
         public static object GetCellValue(this NPOI.SS.UserModel.ICell cell,string replaceValue="")
         {
             if (cell == null)

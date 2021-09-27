@@ -1,5 +1,6 @@
 ﻿using JimiTools.Helper;
 using JimiTools.Model;
+using NPOI.SS.UserModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,7 +21,7 @@ namespace JimiTools.Forms
         DataTable inputTable = new DataTable();
         private readonly object latch = new object();
         SynchronizationContext syncContext = null;
-
+        static string municipality = "上海,北京,天津,重庆";
 
         public FrmDeliveryTime()
         {
@@ -33,7 +34,6 @@ namespace JimiTools.Forms
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            BuildDeliveryTime();
 
             if (string.IsNullOrWhiteSpace(txtAddress.Text))
             {
@@ -41,41 +41,51 @@ namespace JimiTools.Forms
                 return;
             }
 
-            Tuple<string, int> matchDelivery = null;
-            var addressText = txtAddress.Text.Trim();
+            var match = GetDeliveryTime(txtAddress.Text.Trim());
 
-            var addressLevel3 = GetAddressLevel3(addressText);
-            if (addressLevel3!=null)
+            txtResult.Text += txtAddress.Text + "\t"
+                + (match == null ? "无匹配结果" : $"匹配区域： {match.Item1}\t时效: {match.Item3} 天")
+                + Environment.NewLine;
+            ScrollToBottom();
+        }
+
+        Tuple<string,string,int> GetDeliveryTime(string address)
+        {
+            BuildDeliveryTime();
+
+            if (string.IsNullOrWhiteSpace(address))
+            {
+                return null;
+            }
+
+            Tuple<string, int> matchDelivery = null;
+
+            var addressLevel3 = GetAddressLevel3(address);
+            if (addressLevel3 != null)
             {
                 if (DeliveryTime.ContainsKey(addressLevel3))
                 {
-                    txtResult.Text += addressText + "\t"
-                        +  $"匹配区域： {addressLevel3}\t时效: {DeliveryTime[addressLevel3].Item2} 天"
-                        + Environment.NewLine;
-                    ScrollToBottom();
-                    return;
+                    return new Tuple<string, string, int>(addressLevel3, DeliveryTime[addressLevel3].Item1, DeliveryTime[addressLevel3].Item2);
                 }
             }
 
-            var address = addressText.ToCharArray().ToList();
+            var addressArr = address.ToCharArray().ToList();
 
             var matchKey = string.Empty;
-            while (address.Count>1)
+            while (addressArr.Count > 1)
             {
-                matchKey = new string(address.ToArray());
+                matchKey = new string(addressArr.ToArray());
                 if (DeliveryTime.ContainsKey(matchKey))
                 {
                     matchDelivery = DeliveryTime[matchKey];
                     break;
                 }
-                address.RemoveAt(address.Count - 1);
+                addressArr.RemoveAt(addressArr.Count - 1);
             }
 
-            txtResult.Text += addressText + "\t"
-                + (matchDelivery == null ? "无匹配结果" : $"匹配区域： {matchKey}\t时效: {matchDelivery.Item2} 天")
-                + Environment.NewLine;
-            ScrollToBottom();
+            return matchDelivery==null?null: new Tuple<string, string, int>(matchKey, matchDelivery.Item1, matchDelivery.Item2);
         }
+
 
         void ScrollToBottom()
         {
@@ -110,7 +120,6 @@ namespace JimiTools.Forms
 
             var deliveryTimeFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"Data", "HiltiDeliveryTime.txt");
             var deliveryTimeContent = File.ReadAllLines(deliveryTimeFile);
-            var municipality = "上海,北京,天津,重庆";
             var specialProvince = "黑龙江,内蒙古";
 
             foreach (var item in deliveryTimeContent)
@@ -254,6 +263,7 @@ namespace JimiTools.Forms
                     SendCity = txtToCity.Text.Trim(),
                     SendDate = txtSendDate.Text.Trim(),
                     SendStatus = txtSendStatus.Text.Trim(),
+                    OrderNO = txtOrderNum.Text.Trim(),
                 };
             }
         }
@@ -296,12 +306,12 @@ namespace JimiTools.Forms
 
             // Create output excel
             NPOI.XSSF.UserModel.XSSFWorkbook outputWorkbook = new NPOI.XSSF.UserModel.XSSFWorkbook();
-            var sheet = outputWorkbook.CreateSheet("sheet1");
-            var headerRow = sheet.CreateRow(0);
+            var outputSheet = outputWorkbook.CreateSheet("sheet1");
+            var headerRow = outputSheet.CreateRow(0);
 
             var cellFont = outputWorkbook.CreateFont();
             cellFont.FontName = "SimSun";
-            cellFont.FontHeightInPoints = 9;
+            cellFont.FontHeightInPoints = 10;
 
             var cellStyle = outputWorkbook.CreateCellStyle();
             cellStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
@@ -310,45 +320,66 @@ namespace JimiTools.Forms
             cellStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
             cellStyle.SetFont(cellFont);
 
-            var columns = "客户运单号,收货人姓名,收货人电话,送货地址,按时效应到日期,预计到货日日期".Split(',');
+            var redCellFont = outputWorkbook.CreateFont();
+            redCellFont.FontName = "SimSun";
+            redCellFont.FontHeightInPoints = 9;
+            redCellFont.Color= NPOI.HSSF.Util.HSSFColor.Red.Index;
 
+            var redCellStyle = outputWorkbook.CreateCellStyle();
+            redCellStyle.SetFont(redCellFont);
+
+            //                  0       1           2         3         4           5             6        7        8
+            var columns = "客户运单号,收货人姓名,收货人电话,送货地址,按时效应到日期,预计到货日日期,审核原因,匹配区域,匹配时效".Split(',');
             for (int i = 0; i < columns.Length; i++)
             {
                 headerRow.CreateCell(i, cellStyle).SetCellValue(columns[i]);
             }
+            //Set column width
+            outputSheet.SetColumnWidth(3,73 * 256);
+            outputSheet.SetColumnWidth(6,15 * 256);
+            outputSheet.SetColumnWidth(7,18 * 256);
 
+            //Check orders
+            var newRowNum = 1;
+            var inputHeadersList = inputHeaders.ToList();
+            for (int i = 1; i < inputSheet.LastRowNum; i++)
+            {
+                var row = inputSheet.GetRow(i);
+                var orderNum=row.GetCell(inputHeadersList.IndexOf(deliveryTimeFilter.OrderNO)).GetCellStringValue();
+                var toAddress=row.GetCell(inputHeadersList.IndexOf(deliveryTimeFilter.Address)).GetCellStringValue();
+                var recieveDate=row.GetCell(inputHeadersList.IndexOf(deliveryTimeFilter.RecieveDate)).GetCellStringValue();
+                var sendDate=row.GetCell(inputHeadersList.IndexOf(deliveryTimeFilter.SendDate)).GetCellStringValue();
+                var sendCity=row.GetCell(inputHeadersList.IndexOf(deliveryTimeFilter.SendCity)).GetCellStringValue();
+                var sendStatus=row.GetCell(inputHeadersList.IndexOf(deliveryTimeFilter.SendStatus)).GetCellStringValue();
+                var carrier=row.GetCell(inputHeadersList.IndexOf("承运商")).GetCellStringValue();
 
+                if ("已送达".Equals(sendStatus) || municipality.Contains(toAddress.Substring(0,2)) || carrier=="自提")
+                {
+                    continue;
+                }
 
+                var deliveryTime = GetDeliveryTime(toAddress);
 
-
-            //for (int i = 0; i < rows.Count; i++)
-            //{
-            //    var dataRow = rows[i];
-            //    var newRow = sheet.CreateRow(i + 1);
-
-            //    for (int j = 0; j < columnsItems.Count; j++)
-            //    {
-            //        var columnInfo = columnsItems[j];
-            //        string cellValue = string.Empty;
-
-            //        if (!string.IsNullOrWhiteSpace(columnInfo.ReferenceColumn))
-            //        {
-            //            cellValue = dataRow[columnInfo.ReferenceColumn] + "";
-            //        }
-
-            //        if (columnInfo.ValueType == "Numeric" && cellValue.IsNumeric())
-            //        {
-            //            newRow.CreateCell(j, cellStyle).SetCellValue(cellValue.ToNumeric());
-            //        }
-            //        else
-            //        {
-            //            newRow.CreateCell(j, cellStyle).SetCellValue(cellValue);
-            //        }
-
-
-
-            //    }
-            //}
+                if (deliveryTime == null)
+                {
+                    CreaeRow(outputSheet, ref newRowNum, cellStyle, redCellStyle, orderNum, toAddress, recieveDate, "未匹配到时效", "", null);
+                }
+                else
+                {
+                    var newRecieveDate = sendDate.ToDateTime().AddDays(deliveryTime.Item3);
+                    if (sendCity == deliveryTime.Item2)
+                    {
+                        if (DateTime.Now.Date >= recieveDate.ToDateTime().Date)
+                        {
+                            CreaeRow(outputSheet, ref newRowNum, cellStyle, redCellStyle, orderNum, toAddress, string.Empty, "超时效", deliveryTime.Item1, deliveryTime.Item3);
+                        }
+                    }
+                    else
+                    {
+                        CreaeRow(outputSheet, ref newRowNum, cellStyle, redCellStyle, orderNum, toAddress, newRecieveDate.ToString("yyyy/M/d"), "目地城市不一致", deliveryTime.Item1, deliveryTime.Item3);
+                    }
+                }
+            }
 
 
             if (!Directory.Exists(txtSavePath.Text))
@@ -362,6 +393,25 @@ namespace JimiTools.Forms
 
 
             MessageBox.Show("审核完成！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        void CreaeRow(ISheet sheet,ref int rowIndex,ICellStyle cellStyle,ICellStyle redCellStyle,
+            string orderNum,string address,string revieveDate,string reason,string area,int? deliveryTime)
+        {
+            //"客户运单号,收货人姓名,收货人电话,送货地址,按时效应到日期,预计到货日日期,审核原因,匹配区域,匹配时效".Split(',');
+            var newRow = sheet.CreateRow(rowIndex++);
+            newRow.CreateCell(0, cellStyle).SetCellValueFromObject(orderNum);
+            newRow.CreateCell(1, cellStyle).SetCellValueFromObject(string.Empty);
+            newRow.CreateCell(2, cellStyle).SetCellValueFromObject(string.Empty);
+            newRow.CreateCell(3, cellStyle).SetCellValueFromObject(address);
+
+
+            newRow.CreateCell(4, cellStyle).SetCellValueFromObject(revieveDate);
+            newRow.CreateCell(5, cellStyle).SetCellValueFromObject(revieveDate);
+
+            newRow.CreateCell(6, redCellStyle).SetCellValueFromObject(reason);
+            newRow.CreateCell(7, redCellStyle).SetCellValueFromObject(area);
+            newRow.CreateCell(8, redCellStyle).SetCellValueFromObject(deliveryTime);
         }
 
     }
