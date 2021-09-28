@@ -55,6 +55,9 @@
             this.btnViewOutput = new System.Windows.Forms.Button();
             this.label10 = new System.Windows.Forms.Label();
             this.dgvInputExcel = new System.Windows.Forms.DataGridView();
+            this.rdoByDetails = new System.Windows.Forms.RadioButton();
+            this.rdoByCity = new System.Windows.Forms.RadioButton();
+            this.btnViewDeliveryFile = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvInputExcel)).BeginInit();
             this.SuspendLayout();
@@ -66,40 +69,43 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(55, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "查询地址";
+            this.label1.Text = "查询信息";
             // 
             // txtAddress
             // 
             this.txtAddress.Location = new System.Drawing.Point(84, 32);
             this.txtAddress.Multiline = true;
             this.txtAddress.Name = "txtAddress";
-            this.txtAddress.Size = new System.Drawing.Size(539, 66);
+            this.txtAddress.Size = new System.Drawing.Size(444, 66);
             this.txtAddress.TabIndex = 1;
             this.txtAddress.Text = "四川省成都市高新区天府五街美年广场A座444";
+            this.txtAddress.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtAddress_KeyPress);
             // 
             // btnSearch
             // 
-            this.btnSearch.Location = new System.Drawing.Point(638, 32);
+            this.btnSearch.BackColor = System.Drawing.Color.Chartreuse;
+            this.btnSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSearch.Location = new System.Drawing.Point(626, 34);
             this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(75, 23);
+            this.btnSearch.Size = new System.Drawing.Size(86, 29);
             this.btnSearch.TabIndex = 2;
             this.btnSearch.Text = "查询";
-            this.btnSearch.UseVisualStyleBackColor = true;
+            this.btnSearch.UseVisualStyleBackColor = false;
             this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
             // 
             // txtResult
             // 
-            this.txtResult.Location = new System.Drawing.Point(84, 123);
+            this.txtResult.Location = new System.Drawing.Point(84, 114);
             this.txtResult.Multiline = true;
             this.txtResult.Name = "txtResult";
             this.txtResult.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtResult.Size = new System.Drawing.Size(539, 99);
+            this.txtResult.Size = new System.Drawing.Size(628, 108);
             this.txtResult.TabIndex = 3;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(28, 123);
+            this.label2.Location = new System.Drawing.Point(28, 114);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(55, 13);
             this.label2.TabIndex = 4;
@@ -108,6 +114,9 @@
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.SystemColors.Control;
+            this.groupBox1.Controls.Add(this.btnViewDeliveryFile);
+            this.groupBox1.Controls.Add(this.rdoByCity);
+            this.groupBox1.Controls.Add(this.rdoByDetails);
             this.groupBox1.Controls.Add(this.txtAddress);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
@@ -253,7 +262,7 @@
             // 
             this.btnAudit.BackColor = System.Drawing.Color.LawnGreen;
             this.btnAudit.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAudit.Location = new System.Drawing.Point(129, 283);
+            this.btnAudit.Location = new System.Drawing.Point(129, 249);
             this.btnAudit.Name = "btnAudit";
             this.btnAudit.Size = new System.Drawing.Size(561, 29);
             this.btnAudit.TabIndex = 21;
@@ -263,14 +272,14 @@
             // 
             // txtSavePath
             // 
-            this.txtSavePath.Location = new System.Drawing.Point(129, 243);
+            this.txtSavePath.Location = new System.Drawing.Point(129, 294);
             this.txtSavePath.Name = "txtSavePath";
             this.txtSavePath.Size = new System.Drawing.Size(480, 20);
             this.txtSavePath.TabIndex = 22;
             // 
             // btnViewOutput
             // 
-            this.btnViewOutput.Location = new System.Drawing.Point(615, 242);
+            this.btnViewOutput.Location = new System.Drawing.Point(615, 293);
             this.btnViewOutput.Name = "btnViewOutput";
             this.btnViewOutput.Size = new System.Drawing.Size(75, 23);
             this.btnViewOutput.TabIndex = 23;
@@ -281,7 +290,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(44, 247);
+            this.label10.Location = new System.Drawing.Point(44, 298);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(79, 13);
             this.label10.TabIndex = 24;
@@ -297,6 +306,40 @@
             this.dgvInputExcel.ReadOnly = true;
             this.dgvInputExcel.Size = new System.Drawing.Size(561, 103);
             this.dgvInputExcel.TabIndex = 25;
+            // 
+            // rdoByDetails
+            // 
+            this.rdoByDetails.AutoSize = true;
+            this.rdoByDetails.Checked = true;
+            this.rdoByDetails.Location = new System.Drawing.Point(535, 37);
+            this.rdoByDetails.Name = "rdoByDetails";
+            this.rdoByDetails.Size = new System.Drawing.Size(85, 17);
+            this.rdoByDetails.TabIndex = 5;
+            this.rdoByDetails.TabStop = true;
+            this.rdoByDetails.Text = "按详细地址";
+            this.rdoByDetails.UseVisualStyleBackColor = true;
+            // 
+            // rdoByCity
+            // 
+            this.rdoByCity.AutoSize = true;
+            this.rdoByCity.Location = new System.Drawing.Point(535, 78);
+            this.rdoByCity.Name = "rdoByCity";
+            this.rdoByCity.Size = new System.Drawing.Size(85, 17);
+            this.rdoByCity.TabIndex = 6;
+            this.rdoByCity.Text = "按目的城市";
+            this.rdoByCity.UseVisualStyleBackColor = true;
+            // 
+            // btnViewDeliveryFile
+            // 
+            this.btnViewDeliveryFile.BackColor = System.Drawing.Color.SkyBlue;
+            this.btnViewDeliveryFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnViewDeliveryFile.Location = new System.Drawing.Point(626, 71);
+            this.btnViewDeliveryFile.Name = "btnViewDeliveryFile";
+            this.btnViewDeliveryFile.Size = new System.Drawing.Size(86, 29);
+            this.btnViewDeliveryFile.TabIndex = 7;
+            this.btnViewDeliveryFile.Text = "查看时效表";
+            this.btnViewDeliveryFile.UseVisualStyleBackColor = false;
+            this.btnViewDeliveryFile.Click += new System.EventHandler(this.btnViewDeliveryFile_Click);
             // 
             // FrmDeliveryTime
             // 
@@ -363,5 +406,8 @@
         private System.Windows.Forms.Button btnViewOutput;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.DataGridView dgvInputExcel;
+        private System.Windows.Forms.RadioButton rdoByCity;
+        private System.Windows.Forms.RadioButton rdoByDetails;
+        private System.Windows.Forms.Button btnViewDeliveryFile;
     }
 }
