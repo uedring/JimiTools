@@ -68,6 +68,7 @@
         "Name": "收货人电话",
         "SampleValue": "13657912570",
         "ReferenceColumn": "收货人电话",
+        "ValueType": "Numeric",
         "Index": 11
       },
       {
