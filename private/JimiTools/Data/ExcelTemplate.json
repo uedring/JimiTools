@@ -6,7 +6,8 @@
         "Name": "发货日期",
         "SampleValue": "2021/9/7",
         "ReferenceColumn": "发货日期",
-        "Index": 1
+        "Index": 1,
+        "ValueType": "DateTime"
       },
       {
         "Name": "制单人",
@@ -100,25 +101,29 @@
         "Name": "按时效应到日期",
         "SampleValue": "2021/9/11",
         "ReferenceColumn": "按时效应到日期",
-        "Index": 16
+        "Index": 16,
+        "ValueType": "DateTime"
       },
       {
         "Name": "预计到货日日期",
         "SampleValue": "2021/9/19",
         "ReferenceColumn": "预计到货日日期",
-        "Index": 17
+        "Index": 17,
+        "ValueType": "DateTime"
       },
       {
         "Name": "实际的到货日期",
         "SampleValue": "",
         "ReferenceColumn": "实际到货日期",
-        "Index": 18
+        "Index": 18,
+        "ValueType": "DateTime"
       },
       {
         "Name": "跟踪日期",
         "SampleValue": "2021/9/18",
         "ReferenceColumn": "跟踪日期",
-        "Index": 19
+        "Index": 19,
+        "ValueType": "DateTime"
       },
       {
         "Name": "在途位置",
@@ -160,7 +165,8 @@
         "Name": "实际到货日期",
         "SampleValue": "",
         "ReferenceColumn": "实际到货日期",
-        "Index": 26
+        "Index": 26,
+        "ValueType": "DateTime"
       },
       {
         "Name": "实际签收人",

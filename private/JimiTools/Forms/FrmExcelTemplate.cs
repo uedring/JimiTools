@@ -316,6 +316,14 @@ namespace JimiTools.Forms
             cellStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
             cellStyle.SetFont(cellFont);
 
+            var dateTimeCellStyle= workbook.CreateCellStyle();
+            var dateTimeFormat = workbook.CreateDataFormat();
+            dateTimeCellStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+            dateTimeCellStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+            dateTimeCellStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+            dateTimeCellStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+            dateTimeCellStyle.SetFont(cellFont);
+            dateTimeCellStyle.DataFormat = dateTimeFormat.GetFormat("yyyy/M/d");
 
             for (int i = 0; i < columnsItems.Count; i++)
             {
@@ -341,12 +349,18 @@ namespace JimiTools.Forms
                     {
                         newRow.CreateCell(j, cellStyle).SetCellValue(cellValue.ToNumeric());
                     }
+                    if (columnInfo.ValueType == "DateTime")
+                    {
+                        var newDateCell = newRow.CreateCell(j, dateTimeCellStyle);
+                        if (!string.IsNullOrWhiteSpace(cellValue))
+                        {
+                            newDateCell.SetCellValue(cellValue.ToDateTime());
+                        }
+                    }
                     else
                     {
                         newRow.CreateCell(j, cellStyle).SetCellValue(cellValue);
-                    }
-
-                    
+                    }  
 
                 }
             }
