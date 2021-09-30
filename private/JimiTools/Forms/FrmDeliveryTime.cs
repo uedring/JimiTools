@@ -329,32 +329,24 @@ namespace JimiTools.Forms
             var outputSheet = outputWorkbook.CreateSheet("sheet1");
             var headerRow = outputSheet.CreateRow(0);
 
-            var cellFont = outputWorkbook.CreateFont();
-            cellFont.FontName = "SimSun";
-            cellFont.FontHeightInPoints = 10;
+            var cellStyle = outputWorkbook.CreateCellStyle(null);
+            var coloredCellStyle = outputWorkbook.CreateCellStyle(NPOI.HSSF.Util.HSSFColor.Tan.Index);
+            var dateTimeCellStyle = outputWorkbook.CreateDateTimeCellStyle(null);
+            var dateTimeColoredCellStyle = outputWorkbook.CreateDateTimeCellStyle(NPOI.HSSF.Util.HSSFColor.Tan.Index);
 
-            var cellStyle = outputWorkbook.CreateCellStyle();
-            cellStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
-            cellStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
-            cellStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
-            cellStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
-            cellStyle.SetFont(cellFont);
-
-            var redCellFont = outputWorkbook.CreateFont();
-            redCellFont.FontName = "SimSun";
-            redCellFont.FontHeightInPoints = 10;
-            //redCellFont.Color= NPOI.HSSF.Util.HSSFColor.Red.Index;
-
-            var redCellStyle = outputWorkbook.CreateCellStyle();
-            redCellStyle.FillForegroundColor= NPOI.HSSF.Util.HSSFColor.Tan.Index;
-            redCellStyle.FillPattern = FillPattern.SolidForeground;
-            redCellStyle.SetFont(redCellFont);
+            Dictionary<string, ICellStyle> cellStyles = new Dictionary<string, ICellStyle>()
+            {
+                { "General",cellStyle},
+                { "Colored",coloredCellStyle},
+                { "DateTime",dateTimeCellStyle},
+                { "DateTimeColored",dateTimeColoredCellStyle},
+            };
 
             //                  0       1           2         3         4           5             6        7        8
             var columns = "客户运单号,收货人姓名,收货人电话,送货地址,按时效应到日期,预计到货日日期,审核原因,匹配区域,匹配时效,发货日期,目的城市".Split(',');
             for (int i = 0; i < columns.Length; i++)
             {
-                headerRow.CreateCell(i, i>5?redCellStyle: cellStyle).SetCellValue(columns[i]);
+                headerRow.CreateCell(i, i>5? coloredCellStyle : cellStyle).SetCellValue(columns[i]);
             }
             //Set column width
             outputSheet.SetColumnWidth(0,15 * 256);
@@ -385,8 +377,8 @@ namespace JimiTools.Forms
 
                 if (deliveryTime == null)
                 {
-                    CreaeRow(outputSheet, ref newRowNum, cellStyle, redCellStyle, orderNum, toAddress, 
-                        recieveDate, "未匹配到时效", "", null,sendDate, sendCity);
+                    CreaeRow(outputSheet, ref newRowNum, cellStyles, orderNum, toAddress, 
+                        recieveDate.ToDateTime(), "未匹配到时效", "", null,sendDate, sendCity);
                 }
                 else
                 {
@@ -395,14 +387,14 @@ namespace JimiTools.Forms
                     {
                         if (DateTime.Now.Date >= recieveDate.ToDateTime().Date)
                         {
-                            CreaeRow(outputSheet, ref newRowNum, cellStyle, redCellStyle, orderNum, toAddress, 
-                                recieveDate.ToDateTime().ToString("yyyy/M/d"), "超时效", deliveryTime.Item1, deliveryTime.Item3, sendDate, sendCity);
+                            CreaeRow(outputSheet, ref newRowNum, cellStyles, orderNum, toAddress, 
+                                recieveDate.ToDateTime(), "订单延误", deliveryTime.Item1, deliveryTime.Item3, sendDate, sendCity);
                         }
                     }
                     else
                     {
-                        CreaeRow(outputSheet, ref newRowNum, cellStyle, redCellStyle, orderNum, toAddress, 
-                            newRecieveDate.ToString("yyyy/M/d"), "目地城市不一致", deliveryTime.Item1, deliveryTime.Item3, sendDate, sendCity);
+                        CreaeRow(outputSheet, ref newRowNum, cellStyles, orderNum, toAddress, 
+                            newRecieveDate, "目地城市不一致", deliveryTime.Item1, deliveryTime.Item3, sendDate, sendCity);
                     }
                 }
             }
@@ -421,25 +413,26 @@ namespace JimiTools.Forms
             MessageBox.Show("审核完成！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        void CreaeRow(ISheet sheet,ref int rowIndex,ICellStyle cellStyle,ICellStyle redCellStyle,
-            string orderNum,string address,string revieveDate,string reason,string area,int? deliveryTime,DateTime sendDate,string sendCity)
+        void CreaeRow(ISheet sheet,ref int rowIndex,Dictionary<string,ICellStyle> cellStyles,
+            string orderNum,string address,DateTime revieveDate,string reason,string area,int? deliveryTime,DateTime sendDate,string sendCity)
         {
             //"客户运单号,收货人姓名,收货人电话,送货地址,按时效应到日期,预计到货日日期,审核原因,匹配区域,匹配时效,发货日期,目的城市".Split(',');
             var newRow = sheet.CreateRow(rowIndex++);
-            newRow.CreateCell(0, cellStyle).SetCellValueFromObject(orderNum);
-            newRow.CreateCell(1, cellStyle).SetCellValueFromObject(string.Empty);
-            newRow.CreateCell(2, cellStyle).SetCellValueFromObject(string.Empty);
-            newRow.CreateCell(3, cellStyle).SetCellValueFromObject(address);
+            newRow.CreateCell(0, cellStyles["General"]).SetCellValueFromObject(orderNum);
+            newRow.CreateCell(1, cellStyles["General"]).SetCellValueFromObject(string.Empty);
+            newRow.CreateCell(2, cellStyles["General"]).SetCellValueFromObject(string.Empty);
+            newRow.CreateCell(3, cellStyles["General"]).SetCellValueFromObject(address);
 
 
-            newRow.CreateCell(4, cellStyle).SetCellValueFromObject(revieveDate);
-            newRow.CreateCell(5, cellStyle).SetCellValueFromObject(revieveDate);
+            newRow.CreateCell(4, cellStyles["DateTime"]).SetCellValueFromObject(revieveDate);
+            newRow.CreateCell(5, cellStyles["DateTime"]).SetCellValueFromObject(revieveDate);
 
-            newRow.CreateCell(6, redCellStyle).SetCellValueFromObject(reason);
-            newRow.CreateCell(7, redCellStyle).SetCellValueFromObject((area+"").Replace("省",""));
-            newRow.CreateCell(8, redCellStyle).SetCellValueFromObject(deliveryTime);
-            newRow.CreateCell(9, redCellStyle).SetCellValueFromObject(sendDate.ToString("yyyy/M/d"));
-            newRow.CreateCell(10, redCellStyle).SetCellValueFromObject(sendCity);
+            newRow.CreateCell(6, cellStyles["Colored"]).SetCellValueFromObject(reason);
+            newRow.CreateCell(7, cellStyles["Colored"]).SetCellValueFromObject((area+"").Replace("省",""));
+            newRow.CreateCell(8, cellStyles["Colored"]).SetCellValueFromObject(deliveryTime);
+            newRow.CreateCell(9, cellStyles["DateTimeColored"]).SetCellValueFromObject(sendDate);
+            newRow.CreateCell(10, cellStyles["Colored"]).SetCellValueFromObject(sendCity);
+
         }
 
         private void txtAddress_KeyPress(object sender, KeyPressEventArgs e)

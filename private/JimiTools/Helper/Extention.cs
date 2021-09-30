@@ -41,6 +41,10 @@ namespace JimiTools
             {
                 cell.SetCellValue(string.Empty);
             }
+            else if(value.GetType()==typeof(DateTime) || value.GetType() == typeof(DateTime?))
+            {
+                cell.SetCellValue((DateTime)value);
+            }
             else
             {
                 if (value.ToString().IsNumeric())
@@ -111,6 +115,61 @@ namespace JimiTools
             {
                 return cell.StringCellValue;
             }
+        }
+
+
+        public static ICellStyle CreateDateTimeCellStyle(this NPOI.SS.UserModel.IWorkbook workBook,short? bgColor)
+        {
+            var dateTimeCellStyle = workBook.CreateCellStyle();
+
+            var cellFont = workBook.CreateFont();
+            cellFont.FontName = "SimSun";
+            cellFont.FontHeightInPoints = 9;
+
+            var dateTimeFormat = workBook.CreateDataFormat();
+            dateTimeCellStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+            dateTimeCellStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+            dateTimeCellStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+            dateTimeCellStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+            dateTimeCellStyle.SetFont(cellFont);
+            dateTimeCellStyle.DataFormat = dateTimeFormat.GetFormat("yyyy/M/d");
+
+            if (bgColor.HasValue)
+            {
+                dateTimeCellStyle.FillForegroundColor = bgColor.Value;
+                dateTimeCellStyle.FillPattern = FillPattern.SolidForeground;
+            }
+
+
+
+            return dateTimeCellStyle;
+        }
+
+        public static ICellStyle CreateCellStyle(this NPOI.SS.UserModel.IWorkbook workBook, short? bgColor)
+        {
+            var cellStyle = workBook.CreateCellStyle();
+
+            var cellFont = workBook.CreateFont();
+            cellFont.FontName = "SimSun";
+            cellFont.FontHeightInPoints = 9;
+
+            var dateTimeFormat = workBook.CreateDataFormat();
+            cellStyle.BorderBottom = NPOI.SS.UserModel.BorderStyle.Thin;
+            cellStyle.BorderLeft = NPOI.SS.UserModel.BorderStyle.Thin;
+            cellStyle.BorderRight = NPOI.SS.UserModel.BorderStyle.Thin;
+            cellStyle.BorderTop = NPOI.SS.UserModel.BorderStyle.Thin;
+            cellStyle.SetFont(cellFont);
+
+
+
+            if (bgColor.HasValue)
+            {
+                cellStyle.FillForegroundColor = bgColor.Value;
+                cellStyle.FillPattern = FillPattern.SolidForeground;
+            }
+
+
+            return cellStyle;
         }
 
 

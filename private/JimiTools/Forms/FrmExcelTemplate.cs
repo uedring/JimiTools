@@ -349,7 +349,7 @@ namespace JimiTools.Forms
                     {
                         newRow.CreateCell(j, cellStyle).SetCellValue(cellValue.ToNumeric());
                     }
-                    if (columnInfo.ValueType == "DateTime")
+                    else if (columnInfo.ValueType == "DateTime")
                     {
                         var newDateCell = newRow.CreateCell(j, dateTimeCellStyle);
                         if (!string.IsNullOrWhiteSpace(cellValue))
