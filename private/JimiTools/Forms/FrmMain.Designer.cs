@@ -90,14 +90,14 @@
             // 
             this.btnTime.FlatAppearance.BorderSize = 0;
             this.btnTime.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnTime.Font = new System.Drawing.Font("Microsoft YaHei", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btnTime.Font = new System.Drawing.Font("Microsoft YaHei", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.btnTime.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.btnTime.Image = global::JimiTools.Properties.Resources._002_alarm_clock;
-            this.btnTime.Location = new System.Drawing.Point(188, 163);
+            this.btnTime.Location = new System.Drawing.Point(169, 144);
             this.btnTime.Name = "btnTime";
-            this.btnTime.Size = new System.Drawing.Size(159, 37);
+            this.btnTime.Size = new System.Drawing.Size(189, 37);
             this.btnTime.TabIndex = 2;
-            this.btnTime.Text = "时效审核查询";
+            this.btnTime.Text = "订单审核 | 时效查询";
             this.btnTime.UseVisualStyleBackColor = true;
             this.btnTime.Click += new System.EventHandler(this.btnTime_Click);
             // 

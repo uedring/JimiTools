@@ -123,7 +123,8 @@
         "SampleValue": "2021/9/18",
         "ReferenceColumn": "跟踪日期",
         "Index": 19,
-        "ValueType": "DateTime"
+        "ValueType": "DateTime",
+        "DefaultValue": "@DateTime.Now"
       },
       {
         "Name": "在途位置",

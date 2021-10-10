@@ -200,7 +200,7 @@ namespace JimiTools.Forms
 
         private void txtInputExcel_TextChanged(object sender, EventArgs e)
         {
-            txtSavePath.Text = Path.Combine(Path.GetDirectoryName(txtInputExcel.Text), "时效审核结果");
+            txtSavePath.Text = Path.Combine(Path.GetDirectoryName(txtInputExcel.Text), "订单审核结果");
 
             InitInputGridData();
         }
@@ -284,6 +284,8 @@ namespace JimiTools.Forms
                     SendDate = txtSendDate.Text.Trim(),
                     SendStatus = txtSendStatus.Text.Trim(),
                     OrderNO = txtOrderNum.Text.Trim(),
+                    Carrier = txtCarrier.Text.Trim(),
+                    IsSellOrder = txtIsSellOrder.Text.Trim(),
                 };
             }
         }
@@ -343,7 +345,7 @@ namespace JimiTools.Forms
             };
 
             //                  0       1           2         3         4           5             6        7        8
-            var columns = "客户运单号,收货人姓名,收货人电话,送货地址,按时效应到日期,预计到货日日期,审核原因,匹配区域,匹配时效,发货日期,目的城市".Split(',');
+            var columns = "客户运单号,收货人姓名,收货人电话,送货地址,按时效应到日期,预计到货日日期,审核原因,匹配区域,匹配时效,发货日期,目的城市,承运商,是否销售单".Split(',');
             for (int i = 0; i < columns.Length; i++)
             {
                 headerRow.CreateCell(i, i>5? coloredCellStyle : cellStyle).SetCellValue(columns[i]);
@@ -351,12 +353,14 @@ namespace JimiTools.Forms
             //Set column width
             outputSheet.SetColumnWidth(0,15 * 256);
             outputSheet.SetColumnWidth(3,73 * 256);
-            outputSheet.SetColumnWidth(6,15 * 256);
+            outputSheet.SetColumnWidth(6,28 * 256);
             outputSheet.SetColumnWidth(7,18 * 256);
 
             //Check orders
             var newRowNum = 1;
             var inputHeadersList = inputHeaders.ToList();
+            var ignorCarriers = txtIgnoreCarier.Text.Split(",，;；".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+
             for (int i = 1; i < inputSheet.LastRowNum; i++)
             {
                 var row = inputSheet.GetRow(i);
@@ -366,37 +370,68 @@ namespace JimiTools.Forms
                 var sendDate=row.GetCell(inputHeadersList.IndexOf(deliveryTimeFilter.SendDate)).GetCellStringValue().ToDateTime();
                 var sendCity=row.GetCell(inputHeadersList.IndexOf(deliveryTimeFilter.SendCity)).GetCellStringValue();
                 var sendStatus=row.GetCell(inputHeadersList.IndexOf(deliveryTimeFilter.SendStatus)).GetCellStringValue();
-                var carrier=row.GetCell(inputHeadersList.IndexOf("承运商")).GetCellStringValue();
+                var carrier=row.GetCell(inputHeadersList.IndexOf(deliveryTimeFilter.Carrier)).GetCellStringValue();
+                var isSellOrder=row.GetCell(inputHeadersList.IndexOf(deliveryTimeFilter.IsSellOrder)).GetCellStringValue();
 
-                if ("已送达".Equals(sendStatus) || municipality.Contains(toAddress.Substring(0,2)) || carrier=="自提")
+                if ("已送达".Equals(sendStatus) || ignorCarriers.Contains(carrier))
                 {
                     continue;
                 }
 
                 var deliveryTime = GetDeliveryTime(toAddress);
-
+                IRow newRow=null;
                 if (deliveryTime == null)
                 {
-                    CreaeRow(outputSheet, ref newRowNum, cellStyles, orderNum, toAddress, 
-                        recieveDate.ToDateTime(), "未匹配到时效", "", null,sendDate, sendCity);
+                    newRow=CreaeRow(outputSheet, ref newRowNum, cellStyles, orderNum, toAddress, 
+                        recieveDate.ToDateTime(), "未匹配到时效", "", null,sendDate, sendCity,carrier, isSellOrder);
                 }
                 else
                 {
                     var newRecieveDate = sendDate.AddDays(deliveryTime.Item3);
-                    if (sendCity == deliveryTime.Item2 || sendCity.StartsWith(deliveryTime.Item2) && deliveryTime.Item1.Substring(0,2)==toAddress.Substring(0,2))
+                    if ((sendCity == deliveryTime.Item2 || sendCity.StartsWith(deliveryTime.Item2)) && deliveryTime.Item1.Substring(0,2)==toAddress.Substring(0,2))
                     {
-                        if (DateTime.Now.Date >= recieveDate.ToDateTime().Date)
+                        if (newRecieveDate != recieveDate.ToDateTime().Date)
                         {
-                            CreaeRow(outputSheet, ref newRowNum, cellStyles, orderNum, toAddress, 
-                                recieveDate.ToDateTime(), "订单延误", deliveryTime.Item1, deliveryTime.Item3, sendDate, sendCity);
+                            newRow=CreaeRow(outputSheet, ref newRowNum, cellStyles, orderNum, toAddress,
+                                newRecieveDate,string.IsNullOrWhiteSpace(recieveDate)? "按时效应到日期为空" : "应到日期与时效不符", 
+                                deliveryTime.Item1, deliveryTime.Item3, sendDate, sendCity, carrier, isSellOrder);
                         }
                     }
                     else
                     {
-                        CreaeRow(outputSheet, ref newRowNum, cellStyles, orderNum, toAddress, 
-                            newRecieveDate, "目地城市不一致", deliveryTime.Item1, deliveryTime.Item3, sendDate, sendCity);
+                        if (!municipality.Contains(toAddress.Substring(0, 2)))
+                        {
+                            newRow=CreaeRow(outputSheet, ref newRowNum, cellStyles, orderNum, toAddress,
+                                newRecieveDate, "目地城市不一致", deliveryTime.Item1, deliveryTime.Item3, sendDate, sendCity, carrier, isSellOrder);
+                        }
                     }
                 }
+
+                var extraReason = string.Empty;
+                if (string.IsNullOrWhiteSpace(carrier))
+                {
+                    extraReason += "、承运商为空";
+                }
+
+                if ((orderNum.StartsWith("27") && isSellOrder !="销售单")|| (!orderNum.StartsWith("27") && isSellOrder == "销售单"))
+                {
+                    extraReason += "、是否为销售单有误";
+                }
+
+                if (!string.IsNullOrWhiteSpace(extraReason))
+                {
+                    if (newRow == null)
+                    {
+                        newRow = CreaeRow(outputSheet, ref newRowNum, cellStyles, orderNum, toAddress,
+                            recieveDate.ToDateTime(), extraReason.Trim('、'), "", null, sendDate, sendCity, carrier, isSellOrder);
+                    }
+                    else
+                    {
+                        newRow.GetCell(6).SetCellValue(newRow.GetCell(6).GetCellStringValue() + extraReason);
+                    }
+                }
+
+
             }
 
 
@@ -405,7 +440,7 @@ namespace JimiTools.Forms
                 Directory.CreateDirectory(txtSavePath.Text);
             }
 
-            var saveFile = Path.Combine(txtSavePath.Text, "时效审核结果"+DateTime.Now.ToString("M-d") + ".xlsx");
+            var saveFile = Path.Combine(txtSavePath.Text, "订单审核结果"+DateTime.Now.ToString("M-d") + ".xlsx");
 
             outputWorkbook.Write(new FileStream(saveFile, FileMode.Create));
 
@@ -413,8 +448,9 @@ namespace JimiTools.Forms
             MessageBox.Show("审核完成！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        void CreaeRow(ISheet sheet,ref int rowIndex,Dictionary<string,ICellStyle> cellStyles,
-            string orderNum,string address,DateTime revieveDate,string reason,string area,int? deliveryTime,DateTime sendDate,string sendCity)
+        IRow CreaeRow(ISheet sheet,ref int rowIndex,Dictionary<string,ICellStyle> cellStyles,
+            string orderNum,string address,DateTime revieveDate,string reason,string area,
+            int? deliveryTime,DateTime sendDate,string sendCity,string carrier,string isSellOrder)
         {
             //"客户运单号,收货人姓名,收货人电话,送货地址,按时效应到日期,预计到货日日期,审核原因,匹配区域,匹配时效,发货日期,目的城市".Split(',');
             var newRow = sheet.CreateRow(rowIndex++);
@@ -432,7 +468,10 @@ namespace JimiTools.Forms
             newRow.CreateCell(8, cellStyles["Colored"]).SetCellValueFromObject(deliveryTime);
             newRow.CreateCell(9, cellStyles["DateTimeColored"]).SetCellValueFromObject(sendDate);
             newRow.CreateCell(10, cellStyles["Colored"]).SetCellValueFromObject(sendCity);
+            newRow.CreateCell(11, cellStyles["Colored"]).SetCellValueFromObject(carrier);
+            newRow.CreateCell(12, cellStyles["Colored"]).SetCellValueFromObject(isSellOrder);
 
+            return newRow;
         }
 
         private void txtAddress_KeyPress(object sender, KeyPressEventArgs e)
@@ -461,5 +500,10 @@ namespace JimiTools.Forms
                 MessageBox.Show($"时效文件不存在！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
+
+        private void FrmDeliveryTime_Load(object sender, EventArgs e)
+        {
+
         }
+    }
     }

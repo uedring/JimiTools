@@ -13,6 +13,8 @@ namespace JimiTools.Model
         public string Address { get; set; }
         public string RecieveDate { get; set; }
         public string SendStatus { get; set; }
+        public string Carrier { get; set; }
         public string OrderNO { get; set; }
+        public string IsSellOrder { get; set; }
     }
 }

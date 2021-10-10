@@ -345,6 +345,13 @@ namespace JimiTools.Forms
                         cellValue = dataRow[columnInfo.ReferenceColumn] + "";
                     }
 
+                    switch (columnInfo.DefaultValue)
+                    {
+                        case "@DateTime.Now":
+                            cellValue = DateTime.Now.ToString();
+                            break;
+                    }
+
                     if (columnInfo.ValueType == "Numeric" && cellValue.IsNumeric())
                     {
                         newRow.CreateCell(j, cellStyle).SetCellValue(cellValue.ToNumeric());
