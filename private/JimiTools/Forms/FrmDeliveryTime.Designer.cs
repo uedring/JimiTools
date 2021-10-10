@@ -61,10 +61,10 @@
             this.txtCarrier = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.txtIgnoreCarier = new System.Windows.Forms.TextBox();
-            this.label12 = new System.Windows.Forms.Label();
             this.txtIsSellOrder = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
+            this.txtIgnoreCarier = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvInputExcel)).BeginInit();
             this.groupBox2.SuspendLayout();
@@ -95,7 +95,7 @@
             this.btnSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnSearch.Location = new System.Drawing.Point(626, 23);
             this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(86, 29);
+            this.btnSearch.Size = new System.Drawing.Size(102, 29);
             this.btnSearch.TabIndex = 2;
             this.btnSearch.Text = "查询";
             this.btnSearch.UseVisualStyleBackColor = false;
@@ -107,7 +107,7 @@
             this.txtResult.Multiline = true;
             this.txtResult.Name = "txtResult";
             this.txtResult.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtResult.Size = new System.Drawing.Size(595, 108);
+            this.txtResult.Size = new System.Drawing.Size(611, 108);
             this.txtResult.TabIndex = 3;
             // 
             // label2
@@ -140,12 +140,12 @@
             // btnViewDeliveryFile
             // 
             this.btnViewDeliveryFile.BackColor = System.Drawing.Color.SkyBlue;
-            this.btnViewDeliveryFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnViewDeliveryFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnViewDeliveryFile.Location = new System.Drawing.Point(626, 60);
             this.btnViewDeliveryFile.Name = "btnViewDeliveryFile";
-            this.btnViewDeliveryFile.Size = new System.Drawing.Size(86, 29);
+            this.btnViewDeliveryFile.Size = new System.Drawing.Size(102, 29);
             this.btnViewDeliveryFile.TabIndex = 7;
-            this.btnViewDeliveryFile.Text = "查看时效表";
+            this.btnViewDeliveryFile.Text = "查看修改时效表";
             this.btnViewDeliveryFile.UseVisualStyleBackColor = false;
             this.btnViewDeliveryFile.Click += new System.EventHandler(this.btnViewDeliveryFile_Click);
             // 
@@ -391,23 +391,6 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "表格列名配置";
             // 
-            // txtIgnoreCarier
-            // 
-            this.txtIgnoreCarier.Location = new System.Drawing.Point(129, 102);
-            this.txtIgnoreCarier.Name = "txtIgnoreCarier";
-            this.txtIgnoreCarier.Size = new System.Drawing.Size(227, 20);
-            this.txtIgnoreCarier.TabIndex = 30;
-            this.txtIgnoreCarier.Text = "顺丰快递，自提";
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(44, 105);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(79, 13);
-            this.label12.TabIndex = 29;
-            this.label12.Text = "不审核承运商";
-            // 
             // txtIsSellOrder
             // 
             this.txtIsSellOrder.Location = new System.Drawing.Point(350, 64);
@@ -424,6 +407,23 @@
             this.label13.Size = new System.Drawing.Size(91, 13);
             this.label13.TabIndex = 28;
             this.label13.Text = "是否销售单列名";
+            // 
+            // txtIgnoreCarier
+            // 
+            this.txtIgnoreCarier.Location = new System.Drawing.Point(129, 102);
+            this.txtIgnoreCarier.Name = "txtIgnoreCarier";
+            this.txtIgnoreCarier.Size = new System.Drawing.Size(227, 20);
+            this.txtIgnoreCarier.TabIndex = 30;
+            this.txtIgnoreCarier.Text = "顺丰快递，自提";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(44, 105);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(79, 13);
+            this.label12.TabIndex = 29;
+            this.label12.Text = "不审核承运商";
             // 
             // FrmDeliveryTime
             // 

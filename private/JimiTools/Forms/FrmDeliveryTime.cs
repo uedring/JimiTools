@@ -24,11 +24,11 @@ namespace JimiTools.Forms
 
     public partial class FrmDeliveryTime : Form
     {
-
         static string deliveryTimeFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "HiltiDeliveryTime.txt");
-        static Dictionary<string, Tuple<string, int>> DeliveryTime = new Dictionary<string, Tuple<string, int>>();
-        static Dictionary<string, Tuple<string, int>> CityDeliveryTime = new Dictionary<string, Tuple<string, int>>();
+        Dictionary<string, Tuple<string, int>> DeliveryTime = new Dictionary<string, Tuple<string, int>>();
+        Dictionary<string, Tuple<string, int>> CityDeliveryTime = new Dictionary<string, Tuple<string, int>>();
 
+        DateTime FileLastWriteTime = DateTime.MinValue;
         DataTable inputTable = new DataTable();
         private readonly object latch = new object();
         SynchronizationContext syncContext = null;
@@ -133,17 +133,27 @@ namespace JimiTools.Forms
 
         void BuildDeliveryTime()
         {
-            if (DeliveryTime.Any())
+            var fileLastWriteTime = File.GetLastWriteTime(deliveryTimeFile);
+            if (fileLastWriteTime==this.FileLastWriteTime)
             {
                 return;
             }
+
+            DeliveryTime.Clear();
+            CityDeliveryTime.Clear();
+            this.FileLastWriteTime = fileLastWriteTime;
 
             var deliveryTimeContent = File.ReadAllLines(deliveryTimeFile);
             var specialProvince = "黑龙江,内蒙古";
 
             foreach (var item in deliveryTimeContent)
             {
-                var vals = item.Split("\t".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                var vals = item.Split("\t ".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+
+                if (vals.Length<3)
+                {
+                    continue;
+                }
 
                 DeliveryTime[vals[0] + vals[1]]= new Tuple<string, int>(vals[1], ToInt32(vals[2]));
                 CityDeliveryTime[vals[1]]= new Tuple<string, int>(vals[0] + vals[1], ToInt32(vals[2]));
@@ -487,23 +497,29 @@ namespace JimiTools.Forms
         {
             if (File.Exists(deliveryTimeFile))
             {
-                var tempFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"时效文件.txt");
-                if (!File.Exists(tempFile))
-                {
-                    File.WriteAllText(tempFile, File.ReadAllText(deliveryTimeFile));
-                }
-
-                System.Diagnostics.Process.Start(tempFile);
+                System.Diagnostics.Process.Start(deliveryTimeFile);
             }
             else
             {
-                MessageBox.Show($"时效文件不存在！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"时效文件不存在！文件名：\r\n"+deliveryTimeFile, "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
         private void FrmDeliveryTime_Load(object sender, EventArgs e)
         {
+            if (!File.Exists(deliveryTimeFile))
+            {
+                MessageBox.Show($"时效文件不存在！无法进行后续操作，请检查文件是否存在！文件名：\r\n" + deliveryTimeFile, "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
 
+            Task.Run(async()=> {
+
+                while (true)
+                {
+                    BuildDeliveryTime();
+                    await Task.Delay(2 * 1000);
+                }
+            });
         }
     }
     }
