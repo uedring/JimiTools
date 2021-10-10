@@ -393,14 +393,14 @@ namespace JimiTools.Forms
                 if (deliveryTime == null)
                 {
                     newRow=CreaeRow(outputSheet, ref newRowNum, cellStyles, orderNum, toAddress, 
-                        recieveDate.ToDateTime(), "未匹配到时效", "", null,sendDate, sendCity,carrier, isSellOrder);
+                        recieveDate.ToDateTime(), "时效表无此目的城市", "", null,sendDate, sendCity,carrier, isSellOrder);
                 }
                 else
                 {
                     var newRecieveDate = sendDate.AddDays(deliveryTime.Item3);
                     if ((sendCity == deliveryTime.Item2 || sendCity.StartsWith(deliveryTime.Item2)) && deliveryTime.Item1.Substring(0,2)==toAddress.Substring(0,2))
                     {
-                        if (newRecieveDate != recieveDate.ToDateTime().Date)
+                        if (newRecieveDate.Date != recieveDate.ToDateTime().Date)
                         {
                             newRow=CreaeRow(outputSheet, ref newRowNum, cellStyles, orderNum, toAddress,
                                 newRecieveDate,string.IsNullOrWhiteSpace(recieveDate)? "按时效应到日期为空" : "应到日期与时效不符", 
