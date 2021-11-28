@@ -11,5 +11,8 @@
     <Setting Name="ExcelDeliveryTimeSource" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="SellOrderCode" Type="System.String" Scope="User">
+      <Value Profile="(Default)">38</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

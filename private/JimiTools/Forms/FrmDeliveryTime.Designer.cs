@@ -65,6 +65,8 @@
             this.label13 = new System.Windows.Forms.Label();
             this.txtIgnoreCarier = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
+            this.txtSellCode = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvInputExcel)).BeginInit();
             this.groupBox2.SuspendLayout();
@@ -410,7 +412,7 @@
             // 
             // txtIgnoreCarier
             // 
-            this.txtIgnoreCarier.Location = new System.Drawing.Point(129, 102);
+            this.txtIgnoreCarier.Location = new System.Drawing.Point(129, 104);
             this.txtIgnoreCarier.Name = "txtIgnoreCarier";
             this.txtIgnoreCarier.Size = new System.Drawing.Size(227, 20);
             this.txtIgnoreCarier.TabIndex = 30;
@@ -419,17 +421,36 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(44, 105);
+            this.label12.Location = new System.Drawing.Point(44, 108);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(79, 13);
             this.label12.TabIndex = 29;
             this.label12.Text = "不审核承运商";
+            // 
+            // txtSellCode
+            // 
+            this.txtSellCode.Location = new System.Drawing.Point(467, 104);
+            this.txtSellCode.Name = "txtSellCode";
+            this.txtSellCode.Size = new System.Drawing.Size(100, 20);
+            this.txtSellCode.TabIndex = 32;
+            this.txtSellCode.Text = "38";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(381, 108);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(79, 13);
+            this.label14.TabIndex = 31;
+            this.label14.Text = "销售单识别码";
             // 
             // FrmDeliveryTime
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(772, 583);
+            this.Controls.Add(this.txtSellCode);
+            this.Controls.Add(this.label14);
             this.Controls.Add(this.txtIgnoreCarier);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.groupBox2);
@@ -494,5 +515,7 @@
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.TextBox txtIsSellOrder;
         private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.TextBox txtSellCode;
+        private System.Windows.Forms.Label label14;
     }
 }

@@ -41,6 +41,8 @@ namespace JimiTools.Forms
             syncContext = SynchronizationContext.Current;
 
             txtInputExcel.Text = Properties.Settings.Default.ExcelDeliveryTimeSource;
+            txtSellCode.Text= Properties.Settings.Default.SellOrderCode;
+
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
@@ -308,6 +310,12 @@ namespace JimiTools.Forms
                 return;
             }
 
+            if (string.IsNullOrWhiteSpace(txtSellCode.Text))
+            {
+                MessageBox.Show($"销售单识别码不允许为空", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             // Read input excel
             NPOI.XSSF.UserModel.XSSFWorkbook inputWorkbook = new NPOI.XSSF.UserModel.XSSFWorkbook(new FileStream(txtInputExcel.Text, FileMode.Open, FileAccess.Read));
             var inputSheet = inputWorkbook.GetSheetAt(0);
@@ -367,6 +375,7 @@ namespace JimiTools.Forms
             outputSheet.SetColumnWidth(7,18 * 256);
 
             //Check orders
+            var sellCode = txtSellCode.Text.Trim();
             var newRowNum = 1;
             var inputHeadersList = inputHeaders.ToList();
             var ignorCarriers = txtIgnoreCarier.Text.Split(",，;；".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
@@ -423,7 +432,7 @@ namespace JimiTools.Forms
                     extraReason += "、承运商为空";
                 }
 
-                if ((orderNum.StartsWith("27") && isSellOrder !="销售单")|| (!orderNum.StartsWith("27") && isSellOrder == "销售单"))
+                if ((orderNum.StartsWith(sellCode) && isSellOrder !="销售单")|| (!orderNum.StartsWith(sellCode) && isSellOrder == "销售单"))
                 {
                     extraReason += "、是否为销售单有误";
                 }
@@ -454,7 +463,8 @@ namespace JimiTools.Forms
 
             outputWorkbook.Write(new FileStream(saveFile, FileMode.Create));
 
-
+            Properties.Settings.Default.SellOrderCode = txtSellCode.Text;
+            Properties.Settings.Default.Save();
             MessageBox.Show("审核完成！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 

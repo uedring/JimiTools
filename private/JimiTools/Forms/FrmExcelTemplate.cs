@@ -110,7 +110,7 @@ namespace JimiTools.Forms
                             newRow[0] = i;
                             for (int j = 0; j < lastCellNum; j++)
                             {
-                                newRow[j + 1] = currentRow.GetCell(j).GetCellValue(" 0:00:00");
+                                newRow[j + 1] = currentRow.GetCell(j).GetCellValue();
                             }
                             inputTable.Rows.Add(newRow);
                         }

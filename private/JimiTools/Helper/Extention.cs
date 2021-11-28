@@ -68,7 +68,7 @@ namespace JimiTools
             return d;
         }
 
-        public static object GetCellValue(this NPOI.SS.UserModel.ICell cell,string replaceValue="")
+        public static object GetCellValue(this NPOI.SS.UserModel.ICell cell,string replaceValue= " [0-9]+:[0-9]+.+")
         {
             if (cell == null)
             {
@@ -91,7 +91,7 @@ namespace JimiTools
                 }
                 else
                 {
-                    return cell.StringCellValue.Replace(replaceValue, "");
+                    return System.Text.RegularExpressions.Regex.Replace(cell.StringCellValue, replaceValue, "");
                 }
             }
         }
